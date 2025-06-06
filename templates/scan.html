@@ -1,25 +1,29 @@
-# templates/scan.html (example template layout, place in templates/ folder)
-"""
+<!-- templates/scan.html -->
 {% extends 'base.html' %}
+
 {% block content %}
-  <h2>Run Network Scan</h2>
-  <form method="post">
-    <div>
-      <label for="scan_type">Scan Type:</label>
-      <select name="scan_type" required>
-        <option value="nmap">Nmap Ping Scan</option>
-        <option value="arp-scan">ARP Scan</option>
-      </select>
-    </div>
-    <div>
-      <label for="target">Target (CIDR/IP):</label>
-      <input type="text" name="target" required placeholder="e.g. 192.168.1.0/24">
-    </div>
-    <button type="submit">Start Scan</button>
-  </form>
-  {% if result %}
-    <h3>Scan Results:</h3>
-    <pre>{{ result }}</pre>
-  {% endif %}
+  {% include 'navbar.html' %}
+
+  <div style="max-width: 600px; margin: 2rem auto;">
+    <h2>Run Network Scan</h2>
+    <form method="post">
+      <div style="margin-bottom: 1rem;">
+        <label for="scan_type">Scan Type:</label>
+        <select name="scan_type" required class="form-control">
+          <option value="nmap">Nmap Ping Scan</option>
+          <option value="arp-scan">ARP Scan</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label for="target">Target (CIDR/IP):</label>
+        <input type="text" name="target" required class="form-control" placeholder="e.g. 192.168.1.0/24">
+      </div>
+      <button type="submit" class="btn btn-primary">Start Scan</button>
+    </form>
+
+    {% if result %}
+      <h3 style="margin-top: 2rem;">Scan Results:</h3>
+      <pre style="background: #f8f9fa; padding: 1rem; border: 1px solid #ccc;">{{ result }}</pre>
+    {% endif %}
+  </div>
 {% endblock %}
-"""
