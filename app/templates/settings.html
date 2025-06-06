@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Settings</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        label { display: block; margin-top: 1em; }
+        input[type="text"], input[type="number"], input[type="email"] { width: 300px; padding: 0.5em; }
+        button { margin-top: 1.5em; padding: 0.5em 1em; }
+        .flash { padding: 1em; margin-bottom: 1em; border-radius: 4px; }
+        .flash.success { background-color: #d4edda; color: #155724; }
+        .flash.error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Settings</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('settings.update_settings') }}" method="post">
+        <label for="scan_interval">Scan Interval (seconds):</label>
+        <input type="number" id="scan_interval" name="scan_interval" value="{{ settings.scan_interval }}" min="10" required />
+
+        <label for="notify_email">Notification Email:</label>
+        <input type="email" id="notify_email" name="notify_email" value="{{ settings.notify_email }}" required />
+
+        <label>
+            <input type="checkbox" name="enable_notifications" {% if settings.enable_notifications %}checked{% endif %} />
+            Enable Notifications
+        </label>
+
+        <button type="submit">Save Settings</button>
+    </form>
+</body>
+</html>

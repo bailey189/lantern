@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Network Topology - Lantern</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- vis-network styles -->
+    <link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet">
+    <style>
+        #network-graph {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="container mt-4">
+        <h2>Network Topology</h2>
+        <p class="text-muted">Visual representation of scanned devices and their connections.</p>
+        <div id="network-graph"></div>
+    </div>
+
+    <!-- vis-network scripts -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script>
+        const nodes = new vis.DataSet({{ nodes | tojson | safe }});
+        const edges = new vis.DataSet({{ edges | tojson | safe }});
+
+        const container = document.getElementById('network-graph');
+        const data = { nodes: nodes, edges: edges };
+        const options = {
+            layout: {
+                hierarchical: false
+            },
+            physics: {
+                stabilization: false
+            },
+            interaction: {
+                hover: true
+            },
+            nodes: {
+                shape: 'dot',
+                size: 20,
+                font: {
+                    size: 14,
+                    color: '#000'
+                }
+            },
+            edges: {
+                arrows: 'to',
+                smooth: {
+                    type: 'cubicBezier',
+                    forceDirection: 'horizontal',
+                    roundness: 0.4
+                }
+            }
+        };
+        new vis.Network(container, data, options);
+    </script>
+</body>
+</html>

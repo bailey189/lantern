@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.93 scan initiated Fri Jun  6 17:56:57 2025 as: nmap -sn -oX nmap_results.xml 172.16.1.0/24 -->
+<nmaprun scanner="nmap" args="nmap -sn -oX nmap_results.xml 172.16.1.0/24" start="1749247017" startstr="Fri Jun  6 17:56:57 2025" version="7.93" xmloutputversion="1.05">
+<verbose level="0"/>
+<debugging level="0"/>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="172.16.1.11" addrtype="ipv4"/>
+<hostnames>
+<hostname name="pi.hole" type="PTR"/>
+</hostnames>
+<times srtt="427" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="172.16.1.20" addrtype="ipv4"/>
+<hostnames>
+<hostname name="printer1.lan" type="PTR"/>
+</hostnames>
+<times srtt="34533" rttvar="34533" to="172665"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.56" addrtype="ipv4"/>
+<hostnames>
+<hostname name="playroom.lan" type="PTR"/>
+</hostnames>
+<times srtt="136842" rttvar="136842" to="684210"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.77" addrtype="ipv4"/>
+<hostnames>
+<hostname name="Lantern.lan" type="PTR"/>
+</hostnames>
+<times srtt="390" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="172.16.1.79" addrtype="ipv4"/>
+<hostnames>
+<hostname name="MyQ-FBF.lan" type="PTR"/>
+</hostnames>
+<times srtt="124129" rttvar="124129" to="620645"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.86" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="8449" rttvar="8449" to="100000"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.88" addrtype="ipv4"/>
+<hostnames>
+<hostname name="wlan0.lan" type="PTR"/>
+</hostnames>
+<times srtt="74347" rttvar="74347" to="371735"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.89" addrtype="ipv4"/>
+<hostnames>
+<hostname name="energybridge2-113c71d4ea9ad864.lan" type="PTR"/>
+</hostnames>
+<times srtt="11715" rttvar="11715" to="100000"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.90" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="9652" rttvar="9652" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="172.16.1.115" addrtype="ipv4"/>
+<hostnames>
+<hostname name="security-dvr.lan" type="PTR"/>
+</hostnames>
+<times srtt="1618" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="172.16.1.117" addrtype="ipv4"/>
+<hostnames>
+<hostname name="linx-986aa14a.lan" type="PTR"/>
+</hostnames>
+<times srtt="526" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.133" addrtype="ipv4"/>
+<hostnames>
+<hostname name="Elliott-s-S10e.lan" type="PTR"/>
+</hostnames>
+<times srtt="97388" rttvar="74712" to="396236"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.149" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="151101" rttvar="151101" to="755505"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.165" addrtype="ipv4"/>
+<hostnames>
+<hostname name="Matt-s-S22.lan" type="PTR"/>
+</hostnames>
+<times srtt="96236" rttvar="96236" to="481180"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="172.16.1.201" addrtype="ipv4"/>
+<hostnames>
+<hostname name="pi.hole" type="PTR"/>
+</hostnames>
+<times srtt="92245" rttvar="92245" to="461225"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.214" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="106369" rttvar="106369" to="531845"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.218" addrtype="ipv4"/>
+<hostnames>
+<hostname name="homeassistant.lan" type="PTR"/>
+</hostnames>
+<times srtt="531" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.229" addrtype="ipv4"/>
+<hostnames>
+<hostname name="HS100.lan" type="PTR"/>
+</hostnames>
+<times srtt="93741" rttvar="93741" to="468705"/>
+</host>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="172.16.1.236" addrtype="ipv4"/>
+<hostnames>
+<hostname name="Roomba-3174410052025860.lan" type="PTR"/>
+</hostnames>
+<times srtt="98319" rttvar="98319" to="491595"/>
+</host>
+<runstats><finished time="1749247036" timestr="Fri Jun  6 17:57:16 2025" summary="Nmap done at Fri Jun  6 17:57:16 2025; 256 IP addresses (19 hosts up) scanned in 19.54 seconds" elapsed="19.54" exit="success"/><hosts up="19" down="237" total="256"/>
+</runstats>
+</nmaprun>
