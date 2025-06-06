@@ -1,3 +1,5 @@
+# app/models.py (compatible with refactored app/__init__.py)
+from flask_sqlalchemy import SQLAlchemy
 from app import db
 
 class Device(db.Model):
@@ -9,6 +11,9 @@ class Device(db.Model):
     mac_address = db.Column(db.String(17))
     operating_system = db.Column(db.String(120))
     risk_level = db.Column(db.String(20))
+
+    ports = db.relationship('Port', backref='device', lazy=True)
+    web_vulns = db.relationship('WebVuln', backref='device', lazy=True)
 
 class Port(db.Model):
     id = db.Column(db.Integer, primary_key=True)
