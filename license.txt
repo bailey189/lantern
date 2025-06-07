@@ -1,0 +1,31 @@
+Lantern Software License Agreement
+
+Copyright (c) 2025 Matthew Bailey
+
+This software package, including its proprietary web interface, is licensed, not sold. By purchasing and using this software, you agree to the following terms:
+
+### 1. License Grant
+You are granted a **non-exclusive, non-transferable** license to use this software for personal or business purposes. Redistribution, modification, or resale of the proprietary components without explicit permission is prohibited.
+
+### 2. Open-Source Components
+This software integrates open-source libraries licensed under:
+- BSD-3-Clause
+- MIT
+- Python Software Foundation License (PSF-2.0)
+- Python-2.0
+- 0BSD  
+
+These components remain under their respective licenses, which must be included in this distribution. Users retain the rights provided by those licenses.
+
+### 3. Restrictions on Proprietary Elements
+- You may not distribute, sublicense, or reverse-engineer the **proprietary web interface**.
+- Unauthorized reproduction or distribution may result in legal action.
+
+### 4. Ownership
+The proprietary interface remains the intellectual property of **[Your Name or Company]**. Open-source components retain their original licensing terms.
+
+### 5. Warranty Disclaimer
+This software is provided "as is" without warranties of any kind. The author is not liable for any damages resulting from its use.
+
+### 6. Compliance
+By using this software, you acknowledge and agree to comply with the terms of this agreement and with the licenses of the open-source components.
