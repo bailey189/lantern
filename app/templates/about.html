@@ -1,79 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Lantern</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #f5f5f5;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-        }
-        .title {
-            font-size: 32px;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-        .content {
-            text-align: left;
-            background: #222;
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .footer {
-            margin-top: 30px;
-            font-size: 14px;
-            opacity: 0.7;
-        }
-    </style>
-</head>
-<body>
+<!-- templates/about.html -->
+{% extends 'base.html' %}
 
-    <div class="container">
-        <div class="title">🔥 About Lantern 🔥</div>
-        <div class="subtitle">Raspberry Pi Network Scanner & Security Reporting Tool</div>
+{% block content %}
+  <h2>About Lantern</h2>
+  <div style="margin-top: 2rem; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left;">
+    <p>Lantern is a lightweight, Raspberry Pi-powered cybersecurity toolkit designed to help small businesses, hobbyists, and professionals illuminate risks in their networks.</p>
 
-        <div class="content">
-            <h2>Purpose</h2>
-            <p>Lantern is a lightweight, self-hosted network scanning and reporting web application designed to run on a Raspberry Pi 4 Model B (4GB RAM). It provides cybersecurity insights by identifying network-connected devices, assessing vulnerabilities, and generating security and compliance reports.</p>
+    <p>Developed with usability and clarity in mind, Lantern combines device discovery, vulnerability detection, and network visualization in a sleek, easy-to-use interface.</p>
 
-            <h2>Who It's For</h2>
-            <p>Lantern is built for:</p>
-            <ul>
-                <li>Small businesses looking for affordable cybersecurity solutions.</li>
-                <li>Security analysts who need efficient network visibility.</li>
-                <li>IT professionals managing and securing their local networks.</li>
-            </ul>
+    <h3 style="margin-top: 2rem;">Key Features</h3>
+    <ul style="list-style: disc; padding-left: 1.5rem;">
+      <li>Fast device discovery across Ethernet networks</li>
+      <li>Security scan options using nmap, masscan, arp-scan, and nikto</li>
+      <li>Network visualization using vis.js</li>
+      <li>Device database with editable details</li>
+      <li>Risk-level tagging and web vulnerability tracking</li>
+    </ul>
 
-            <h2>Key Features</h2>
-            <ul>
-                <li>🔍 Network scanning to detect active devices.</li>
-                <li>🛡️ Vulnerability assessment to identify risks.</li>
-                <li>📊 Automated security/compliance reporting.</li>
-                <li>💡 Runs on Raspberry Pi, making it lightweight and cost-effective.</li>
-                <li>🔒 Self-hosted for maximum privacy and control.</li>
-            </ul>
-
-            <h2>Why Lantern?</h2>
-            <p>Cyber threats lurk in the dark—Lantern lights the way by giving users deep visibility into their network security. Whether for compliance, monitoring, or peace of mind, Lantern helps uncover vulnerabilities before they become real threats.</p>
-        </div>
-
-        <div class="footer">
-            <p>&copy; 2025 Lantern Security. Illuminate Your Cybersecurity.</p>
-        </div>
-    </div>
-
-</body>
-</html>
+    <p style="margin-top: 2rem; font-style: italic;">Lantern is licensed and developed by cybersecurity professionals committed to the empowerment of small businesses.</p>
+  </div>
+{% endblock %}
