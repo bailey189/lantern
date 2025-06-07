@@ -1,0 +1,91 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lantern - Illuminate Your Cybersecurity</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      width: 80%;
+      margin: auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .lantern {
+      font-size: 48px;
+      color: #ffcc00;
+      text-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+    .menu {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 2rem 0;
+    }
+    .menu a {
+      text-decoration: none;
+      color: #f5f5f5;
+      background: #333;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .menu a:hover {
+      background: #ffcc00;
+      color: #121212;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    /* Reset default link colors inside content blocks */
+    a {
+      color: #ffcc00;
+    }
+    a:hover {
+      color: #f5f5f5;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="lantern">🔥 Lantern 🔥</div>
+
+    <!-- Navigation menu -->
+    <nav class="menu">
+      <a href="/">Welcome</a>
+      <a href="/scan">Scan</a>
+      <a href="/network">Network</a>
+      <a href="/devices">Devices</a>
+      <a href="/results">Results</a>
+      <a href="/settings">Settings</a>
+      <a href="/about">About</a>
+    </nav>
+
+    <!-- Page-specific content -->
+    {% block content %}
+    {% endblock %}
+
+    <footer class="footer">
+      &copy; 2025 Lantern Security. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
