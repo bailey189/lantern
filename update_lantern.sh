@@ -1,48 +1,49 @@
-# update_lantern.sh
-# Bash script to sync Lantern project on Raspberry Pi and install dependencies
-
 #!/bin/bash
 
-# CONFIGURATION
-REPO_URL="https://github.com/bailey189/lantern.git"
-PROJECT_DIR="/home/pi/lantern"
-VENV_DIR="$PROJECT_DIR/venv"
+# update_lantern.sh - Syncs local Lantern project with the latest GitHub repository version
 
-# Ensure script is run as pi
-if [ "$EUID" -ne 1000 ]; then
-  echo "Please run this script as the 'pi' user (UID 1000)."
+# Set variables
+REPO_URL="https://github.com/bailey189/lantern.git"
+PROJECT_DIR="$HOME/lantern"
+BACKUP_DIR="$HOME/lantern_backup_$(date +%Y%m%d_%H%M%S)"
+
+echo ">>> Updating Lantern Project"
+
+# Ensure script is not run as root
+if [[ $EUID -eq 0 ]]; then
+  echo "Please do not run this script as root. Exiting."
   exit 1
 fi
 
-# Clone or update the repo
-if [ ! -d "$PROJECT_DIR/.git" ]; then
-  echo "Cloning Lantern project..."
-  git clone "$REPO_URL" "$PROJECT_DIR"
+# Backup current project
+if [ -d "$PROJECT_DIR" ]; then
+  echo ">>> Backing up current project to $BACKUP_DIR"
+  cp -r "$PROJECT_DIR" "$BACKUP_DIR"
 else
-  echo "Updating existing Lantern project..."
-  cd "$PROJECT_DIR" || exit
-  git pull origin main
+  echo ">>> No existing Lantern project found at $PROJECT_DIR. Skipping backup."
 fi
 
-# Set up virtual environment if not already created
-if [ ! -d "$VENV_DIR" ]; then
-  echo "Creating virtual environment..."
-  python3 -m venv "$VENV_DIR"
+# Clone into a temporary directory
+TMP_DIR=$(mktemp -d)
+echo ">>> Cloning repository into temporary directory $TMP_DIR"
+git clone "$REPO_URL" "$TMP_DIR"
+
+if [ $? -ne 0 ]; then
+  echo "!!! Git clone failed. Exiting."
+  exit 1
 fi
 
-# Activate virtual environment
-source "$VENV_DIR/bin/activate"
+# Sync the files using rsync (preserves permissions, avoids deleting venv or local data folders)
+echo ">>> Syncing files into $PROJECT_DIR"
+rsync -av --exclude='venv' --exclude='data' --exclude='instance' --exclude='.git' "$TMP_DIR/" "$PROJECT_DIR/"
 
-# Install/update Python dependencies
-if [ -f "$PROJECT_DIR/requirements.txt" ]; then
-  echo "Installing Python dependencies..."
-  pip install --upgrade pip
-  pip install -r "$PROJECT_DIR/requirements.txt"
-else
-  echo "No requirements.txt found. Skipping pip install."
-fi
+# Clean up
+echo ">>> Cleaning up temporary directory"
+rm -rf "$TMP_DIR"
 
-# Deactivate venv
-deactivate
+# Optionally update Python dependencies
+echo ">>> Updating Python dependencies"
+source "$PROJECT_DIR/venv/bin/activate"
+pip install -r "$PROJECT_DIR/requirements.txt"
 
-echo "Lantern project is up to date."
+echo ">>> Update complete!"
