@@ -1,3 +1,4 @@
+#lantern/app/routes/scan.py
 from datetime import datetime
 from app import db
 from app.models import Scan, ScanResult, Device, Port, Vulnerability
