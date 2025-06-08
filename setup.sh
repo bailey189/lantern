@@ -1,7 +1,8 @@
 #!/bin/bash
 mkdir lantern
 cd /lantern
-apt install -y python3 python3-pip python3-venv git postgresql postgresql-contrib
+apt install -y python3 python3-pip python3-venv postgresql postgresql-contrib
+apt install -y git
 
 set -e
 
