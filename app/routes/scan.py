@@ -2,14 +2,45 @@
 from datetime import datetime
 from app import db
 from app.models import Scan, ScanResult, Device, Port, Vulnerability
-from flask import Blueprint
+from flask import Blueprint, request, render_template
 import subprocess
 
 scan_bp = Blueprint('scan', __name__, url_prefix='/scan')
 
 @scan_bp.route('/')
+@scan_bp.route('/run', methods=['GET', 'POST'])
+
 def scan_home():
     return "Scan page"
+
+def run():
+    if request.method == 'POST':
+        tool = request.form.get('tool')
+        target = request.form.get('target')
+        if not tool or not target:
+            return "Tool and target are required", 400
+        
+        scan_id = run_scan(tool, target)
+        return f"Scan started with ID: {scan_id}"
+    
+    # For GET, just show the form
+    tools = [
+        "Nmap",
+        "Masscan",
+        "AngryIPScanner",
+        "Arp-scan",
+        "Dhcpdump",
+        "Kismet",
+        "Aircrack-ng",
+        "Hping3",
+        "Nikto",
+        "Wapiti",
+        "Skipfish",
+        "SQLmap",
+        "Trivy",
+        "Ansible"
+    ]
+    return render_template('scan_run.html', tools=tools)
     
 def run_scan(tool_name, target):
     # Create a new Scan record
