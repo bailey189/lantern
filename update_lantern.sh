@@ -46,4 +46,7 @@ echo ">>> Updating Python dependencies"
 source "$PROJECT_DIR/venv/bin/activate"
 pip install -r "$PROJECT_DIR/requirements.txt"
 
+chmod +x update_lantern.sh
+chmod +x setup.sh
+
 echo ">>> Update complete!"
