@@ -1,6 +1,8 @@
 #!/bin/bash
 mkdir lantern
 cd /lantern
+apt install -y python3 python3-pip python3-venv git postgresql postgresql-contrib
+
 set -e
 
 REPO_URL="https://github.com/bailey189/lantern.git"
