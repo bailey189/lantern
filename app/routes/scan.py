@@ -1,8 +1,15 @@
 from datetime import datetime
 from app import db
 from app.models import Scan, ScanResult, Device, Port, Vulnerability
+from flask import Blueprint
 import subprocess
 
+scan_bp = Blueprint('scan', __name__, url_prefix='/scan')
+
+@scan_bp.route('/')
+def scan_home():
+    return "Scan page"
+    
 def run_scan(tool_name, target):
     # Create a new Scan record
     scan = Scan(tool_name=tool_name, target=target, started_at=datetime.utcnow())
