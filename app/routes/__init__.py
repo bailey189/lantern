@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from app.routes.index import index_bp
 
 db = SQLAlchemy()
 migrate = Migrate()
