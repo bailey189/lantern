@@ -1,69 +1,103 @@
-import subprocess
 from datetime import datetime
-from flask import Blueprint, render_template, request, flash
 from app import db
-from app.models import Scan, ScanResult
+from app.models import Scan, ScanResult, Device, Port, Vulnerability
+import subprocess
 
-main = Blueprint('main', __name__)
+def run_scan(tool_name, target):
+    # Create a new Scan record
+    scan = Scan(tool_name=tool_name, target=target, started_at=datetime.utcnow())
+    db.session.add(scan)
+    db.session.commit()  # Commit to generate scan.id
 
-@main.route('/scan', methods=['GET', 'POST'])
-def scan():
-    result = None
+    # Example: run nmap scan, you should customize for other tools similarly
+    if tool_name.lower() == "nmap":
+        cmd = ["nmap", "-oX", "-", target]
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        output = proc.stdout
+    else:
+        # placeholder for other tools
+        output = f"Simulated output for {tool_name} on {target}"
 
-    if request.method == 'POST':
-        selected_tools = request.form.getlist('tools')
-        outputs = []
+    # Save scan result
+    scan_result = ScanResult(
+        scan_id=scan.id,
+        output=output,
+        created_at=datetime.utcnow()
+    )
+    db.session.add(scan_result)
 
-        for tool in selected_tools:
-            target = None
-            output = None
+    # Parse output to find devices and ports (simplified example for nmap XML)
+    if tool_name.lower() == "nmap":
+        import xml.etree.ElementTree as ET
+        try:
+            root = ET.fromstring(output)
+            for host in root.findall("host"):
+                ip = None
+                mac = None
+                hostname = None
 
-            if tool == 'nmap':
-                target = request.form.get('nmap_target')
-                if target:
-                    cmd = ['nmap', '-sS', target]
-                    try:
-                        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT, text=True, timeout=60)
-                    except Exception as e:
-                        output = f"Nmap error: {e}"
-                else:
-                    output = "Nmap selected but no target specified."
+                # IP
+                addr_elem = host.find('address[@addrtype="ipv4"]')
+                if addr_elem is not None:
+                    ip = addr_elem.attrib.get("addr")
 
-            elif tool == 'masscan':
-                target = request.form.get('masscan_target')
-                if target:
-                    parts = target.split(':')
-                    ip_part = parts[0]
-                    ports = parts[1] if len(parts) > 1 else '1-65535'
-                    cmd = ['masscan', ip_part, '-p', ports, '--rate', '1000']
-                    try:
-                        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT, text=True, timeout=60)
-                    except Exception as e:
-                        output = f"Masscan error: {e}"
-                else:
-                    output = "Masscan selected but no target specified."
+                # MAC
+                mac_elem = host.find('address[@addrtype="mac"]')
+                if mac_elem is not None:
+                    mac = mac_elem.attrib.get("addr")
 
-            # Add other tools similarly...
+                # Hostname
+                hostnames = host.find("hostnames")
+                if hostnames is not None and hostnames.find("hostname") is not None:
+                    hostname = hostnames.find("hostname").attrib.get("name")
 
-            else:
-                output = f"Tool {tool} not implemented or requires external execution."
+                # Create or update Device
+                if ip:
+                    device = Device.query.filter_by(ip_address=ip).first()
+                    if not device:
+                        device = Device(ip_address=ip, mac_address=mac, hostname=hostname, last_seen=datetime.utcnow())
+                        db.session.add(device)
+                    else:
+                        device.last_seen = datetime.utcnow()
+                        if mac:
+                            device.mac_address = mac
+                        if hostname:
+                            device.hostname = hostname
 
-            # Save scan + result to DB if we have output
-            if output:
-                new_scan = Scan(tool_name=tool, target=target, started_at=datetime.utcnow())
-                db.session.add(new_scan)
-                db.session.commit()  # commit now to get scan id
+                    db.session.flush()  # Get device.id for ports
 
-                new_result = ScanResult(scan_id=new_scan.id, output=output)
-                db.session.add(new_result)
+                    # Ports
+                    ports_elem = host.find("ports")
+                    if ports_elem is not None:
+                        for port in ports_elem.findall("port"):
+                            port_id = int(port.attrib.get("portid"))
+                            protocol = port.attrib.get("protocol")
+                            state = port.find("state").attrib.get("state")
+                            service_elem = port.find("service")
+                            service_name = service_elem.attrib.get("name") if service_elem is not None else None
 
-                # Mark scan finished
-                new_scan.finished_at = datetime.utcnow()
-                db.session.commit()
+                            # Check if port exists for device
+                            existing_port = Port.query.filter_by(device_id=device.id, port_number=port_id, protocol=protocol).first()
+                            if not existing_port:
+                                new_port = Port(
+                                    device_id=device.id,
+                                    port_number=port_id,
+                                    protocol=protocol,
+                                    state=state,
+                                    service_name=service_name,
+                                )
+                                db.session.add(new_port)
+                            else:
+                                existing_port.state = state
+                                existing_port.service_name = service_name
 
-                outputs.append(f"--- Results for {tool} on target {target or 'N/A'} ---\n{output}")
+                    # Link scan_result to device
+                    scan_result.device_id = device.id
 
-        result = "\n\n".join(outputs)
-        flash("Scans completed and saved to database.", "success")
+        except ET.ParseError:
+            # If XML parsing fails, just keep the output in ScanResult
+            pass
 
-    return render_template('scan.html', result=result)
+    scan.finished_at = datetime.utcnow()
+    db.session.commit()
+    return scan.id
