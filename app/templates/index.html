@@ -1,74 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lantern - Illuminate Your Cybersecurity</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #f5f5f5;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-        }
-        .lantern {
-            font-size: 48px;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
-            margin-bottom: 20px;
-        }
-        .menu {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .menu a {
-            text-decoration: none;
-            color: #f5f5f5;
-            background: #333;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .menu a:hover {
-            background: #ffcc00;
-            color: #121212;
-        }
-        .footer {
-            margin-top: 30px;
-            font-size: 14px;
-            opacity: 0.7;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <div class="container">
-        <div class="lantern">🔥 Lantern 🔥</div>
-        <h1>Light Your Way Through Cybersecurity Uncertainty</h1>
-        <p>Discover security vulnerabilities and illuminate your network’s hidden risks.</p>
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="lantern display-3 text-warning mb-3">🔥 Lantern 🔥</div>
+    <h1 class="text-light">Light Your Way Through Cybersecurity Uncertainty</h1>
+    <p class="text-secondary">Discover security vulnerabilities and illuminate your network’s hidden risks.</p>
 
-        <div class="menu">
-            <a href="#">Welcome to Lantern</a>
-            <a href="#">Scan</a>
-            <a href="#">Network</a>
-            <a href="#">Devices</a>
-            <a href="#">Results</a>
-            <a href="#">Settings</a>
-            <a href="#">About</a>
-        </div>
-
-        <div class="footer">
-            <a href="/license.html">&copy; 2025 Matthew Bailey. All rights reserved.</a>
-        </div>
+    <div class="menu d-flex justify-content-center flex-wrap gap-3 mt-4">
+        <a class="btn btn-dark" href="{{ url_for('scan.scan_home') }}">Scan</a>
+        <a class="btn btn-dark" href="{{ url_for('network.network_home') }}">Network</a>
+        <a class="btn btn-dark" href="{{ url_for('devices.devices_home') }}">Devices</a>
+        <a class="btn btn-dark" href="{{ url_for('results.results_home') }}">Results</a>
+        <a class="btn btn-dark" href="{{ url_for('settings.settings_home') }}">Settings</a>
+        <a class="btn btn-dark" href="{{ url_for('about.about_home') }}">About</a>
     </div>
 
-</body>
-</html>
+    <div class="footer mt-5">
+        <a href="/license.html" class="text-muted small">&copy; 2025 Matthew Bailey. All rights reserved.</a>
+    </div>
+</div>
+{% endblock %}
