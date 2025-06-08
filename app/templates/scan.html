@@ -1,136 +1,142 @@
-{% extends "base.html" %}
-{% block content %}
+from datetime import datetime
+from flask import Blueprint, request, jsonify
+from app import db
+from app.models import Scan, ScanResult, Device, Port
+import subprocess
+import xml.etree.ElementTree as ET
 
-<div class="container mt-4">
-    <h2>Advanced Network & Security Scanning</h2>
-    <form method="POST" action="{{ url_for('main.scan') }}">
-        <!-- Section: Network Scanning & Enumeration -->
-        <h4 class="mt-4">Network Scanning & Enumeration</h4>
+scan_bp = Blueprint('scan', __name__, url_prefix='/scan')
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="nmap" id="nmapCheck">
-            <label class="form-check-label" for="nmapCheck">Nmap</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="nmap_target" placeholder="Target IP (e.g., 192.168.1.0/24)">
-        </div>
+@scan_bp.route('/')
+def scan_home():
+    return "Scan page - use POST /scan/run to start a scan"
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="masscan" id="masscanCheck">
-            <label class="form-check-label" for="masscanCheck">Masscan</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="masscan_target" placeholder="Target IP and port (e.g., 192.168.1.0/24:80)">
-        </div>
+@scan_bp.route('/run', methods=['POST'])
+def run_scan():
+    data = request.get_json()
+    tool_name = data.get('tool_name')
+    target = data.get('target')
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="angryip" id="angryipCheck">
-            <label class="form-check-label" for="angryipCheck">AngryIPScanner</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="angryip_range" placeholder="IP Range (e.g., 192.168.1.1-254)">
-        </div>
+    if not tool_name or not target:
+        return jsonify({'error': 'tool_name and target are required'}), 400
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="arpscan" id="arpscanCheck">
-            <label class="form-check-label" for="arpscanCheck">Arp-scan</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="arpscan_interface" placeholder="Network Interface (e.g., eth0)">
-        </div>
+    # Create scan record
+    scan = Scan(tool_name=tool_name, target=target, started_at=datetime.utcnow())
+    db.session.add(scan)
+    db.session.commit()  # To get scan.id
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="dhcpdump" id="dhcpdumpCheck">
-            <label class="form-check-label" for="dhcpdumpCheck">Dhcpdump</label>
-        </div>
+    output = None
 
-        <!-- Section: Wireless & Packet Analysis -->
-        <h4 class="mt-4">Wireless & Packet Analysis</h4>
+    try:
+        if tool_name.lower() == "nmap":
+            # Run nmap and capture XML output
+            cmd = ["nmap", "-oX", "-", target]
+            proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            output = proc.stdout
+            # Parse output and save devices/ports
+            parse_nmap_xml(output, scan)
+        else:
+            # Placeholder for other tools or simulate
+            output = f"Simulated output for {tool_name} on {target}"
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="kismet" id="kismetCheck">
-            <label class="form-check-label" for="kismetCheck">Kismet</label>
-        </div>
+        # Save scan result
+        scan_result = ScanResult(
+            scan_id=scan.id,
+            output=output,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(scan_result)
+        
+        scan.finished_at = datetime.utcnow()
+        db.session.commit()
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="aircrack" id="aircrackCheck">
-            <label class="form-check-label" for="aircrackCheck">Aircrack-ng</label>
-        </div>
+    except subprocess.CalledProcessError as e:
+        db.session.rollback()
+        return jsonify({'error': f'Scan command failed: {e}'}), 500
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Unexpected error: {e}'}), 500
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="hping3" id="hping3Check">
-            <label class="form-check-label" for="hping3Check">Hping3</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="hping3_target" placeholder="Target IP (e.g., 192.168.1.1)">
-        </div>
+    return jsonify({'scan_id': scan.id, 'message': 'Scan completed successfully'})
 
-        <!-- Section: Web & Application Security -->
-        <h4 class="mt-4">Web & Application Security</h4>
+def parse_nmap_xml(xml_output, scan):
+    """Parse Nmap XML output and save devices and ports linked to the scan."""
+    try:
+        root = ET.fromstring(xml_output)
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="nikto" id="niktoCheck">
-            <label class="form-check-label" for="niktoCheck">Nikto</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="nikto_url" placeholder="Target URL (e.g., http://192.168.1.10)">
-        </div>
+        for host in root.findall('host'):
+            ip = None
+            mac = None
+            hostname = None
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="wapiti" id="wapitiCheck">
-            <label class="form-check-label" for="wapitiCheck">Wapiti</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="wapiti_url" placeholder="Target URL (e.g., http://example.com)">
-        </div>
+            # Extract IP
+            addr_elem = host.find('address[@addrtype="ipv4"]')
+            if addr_elem is not None:
+                ip = addr_elem.attrib.get('addr')
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="skipfish" id="skipfishCheck">
-            <label class="form-check-label" for="skipfishCheck">Skipfish</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="skipfish_url" placeholder="Target URL (e.g., http://host)">
-        </div>
+            # Extract MAC
+            mac_elem = host.find('address[@addrtype="mac"]')
+            if mac_elem is not None:
+                mac = mac_elem.attrib.get('addr')
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="sqlmap" id="sqlmapCheck">
-            <label class="form-check-label" for="sqlmapCheck">SQLmap</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="sqlmap_url" placeholder="Target URL or POST data">
-        </div>
+            # Extract hostname
+            hostnames = host.find('hostnames')
+            if hostnames is not None and hostnames.find('hostname') is not None:
+                hostname = hostnames.find('hostname').attrib.get('name')
 
-        <!-- Section: System & Compliance Scanning -->
-        <h4 class="mt-4">System & Compliance Scanning</h4>
+            if ip:
+                device = Device.query.filter_by(ip_address=ip).first()
+                if not device:
+                    device = Device(
+                        ip_address=ip,
+                        mac_address=mac,
+                        hostname=hostname,
+                        last_seen=datetime.utcnow()
+                    )
+                    db.session.add(device)
+                else:
+                    device.last_seen = datetime.utcnow()
+                    if mac:
+                        device.mac_address = mac
+                    if hostname:
+                        device.hostname = hostname
+                db.session.flush()  # Ensure device.id is available
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="trivy" id="trivyCheck">
-            <label class="form-check-label" for="trivyCheck">Trivy</label>
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" name="trivy_image" placeholder="Container Image (e.g., nginx:latest)">
-        </div>
+                # Link scan result to device
+                # Assuming scan_result has device_id; if not, adjust accordingly
+                # We'll assign this in the calling function or adapt model
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="tools" value="ansible" id="ansibleCheck">
-            <label class="form-check-label" for="ansibleCheck">Ansible</label>
-        </div>
+                # Parse ports
+                ports_elem = host.find('ports')
+                if ports_elem is not None:
+                    for port in ports_elem.findall('port'):
+                        port_num = int(port.attrib.get('portid'))
+                        protocol = port.attrib.get('protocol')
+                        state_elem = port.find('state')
+                        state = state_elem.attrib.get('state') if state_elem is not None else None
+                        service_elem = port.find('service')
+                        service_name = service_elem.attrib.get('name') if service_elem is not None else None
 
-        <!-- Submit Button -->
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">Run Selected Scans</button>
-        </div>
-    </form>
+                        existing_port = Port.query.filter_by(
+                            device_id=device.id,
+                            port_number=port_num,
+                            protocol=protocol
+                        ).first()
 
-    <!-- Display Results -->
-    {% if result %}
-    <div class="card mt-5">
-        <div class="card-header">Scan Output</div>
-        <div class="card-body">
-            <pre>{{ result }}</pre>
-        </div>
-    </div>
-    {% endif %}
-</div>
+                        if not existing_port:
+                            new_port = Port(
+                                device_id=device.id,
+                                port_number=port_num,
+                                protocol=protocol,
+                                state=state,
+                                service_name=service_name
+                            )
+                            db.session.add(new_port)
+                        else:
+                            existing_port.state = state
+                            existing_port.service_name = service_name
 
-{% endblock %}
+        db.session.flush()
+    except ET.ParseError:
+        # Just skip parsing if invalid XML, but scan result still saved
+        pass
