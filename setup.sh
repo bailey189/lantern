@@ -1,5 +1,6 @@
 #!/bin/bash
-
+mkdir lantern
+cd /lantern
 set -e
 
 REPO_URL="https://github.com/bailey189/lantern.git"
