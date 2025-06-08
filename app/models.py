@@ -1,6 +1,9 @@
-from datetime import datetime
+# app/models.py
 from app import db
+from datetime import datetime
 
+
+    
 class Scan(db.Model):
     __tablename__ = 'scans'
     id = db.Column(db.Integer, primary_key=True)
@@ -21,17 +24,27 @@ class ScanResult(db.Model):
 
 class Device(db.Model):
     __tablename__ = 'devices'
-    id = db.Column(db.Integer, primary_key=True)
-    ip_address = db.Column(db.String(45), nullable=False, unique=True)  # IPv4/IPv6 max length
-    mac_address = db.Column(db.String(17), nullable=True, unique=True)
-    hostname = db.Column(db.String(128), nullable=True)
-    os = db.Column(db.String(128), nullable=True)
-    last_seen = db.Column(db.DateTime, nullable=True)
-    
-    ports = db.relationship('Port', backref='device', lazy=True)
-    vulnerabilities = db.relationship('Vulnerability', backref='device', lazy=True)
-    scan_results = db.relationship('ScanResult', backref='device_info', lazy=True)
 
+    id = db.Column(db.Integer, primary_key=True)
+    ip_address = db.Column(db.String(45), unique=True, nullable=False)
+    mac_address = db.Column(db.String(17))
+    hostname = db.Column(db.String(128))
+    last_seen = db.Column(db.DateTime)
+    
+    # Add this:
+    credentials = db.relationship('Credential', back_populates='device', cascade="all, delete-orphan")
+    
+class Credential(db.Model):
+    __tablename__ = 'credentials'
+
+    id = db.Column(db.Integer, primary_key=True)
+    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'), nullable=False)
+    username = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.String(128), nullable=False)  # Consider encryption for production
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    device = db.relationship('Device', back_populates='credentials')
+    
 class Port(db.Model):
     __tablename__ = 'ports'
     id = db.Column(db.Integer, primary_key=True)
