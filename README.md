@@ -77,7 +77,7 @@ pip install -r requirements.txt
   ```sql
   CREATE DATABASE lantern_db;
   CREATE USER lantern_user WITH PASSWORD 'securepassword';
-  GRANT ALL PRIVILEGES ON DATABASE lantern_db TO lantern_user;
+  GRANT ALL PRIVILEGES ON DATABASE lanterndb TO lanternuser;
   \q
   ```
 - **Update Configuration**: Modify your application's database configuration to match the credentials above.
