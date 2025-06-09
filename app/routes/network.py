@@ -1,6 +1,6 @@
 # app/routes/network.py
 from flask import Blueprint, render_template, jsonify
-from app.models import Device, Port
+from app.models import Asset, Port
 
 network_bp = Blueprint('network', __name__, url_prefix='/network')
 
@@ -10,16 +10,16 @@ def network():
 
 @network_bp.route('/data')
 def network_data():
-    devices = Device.query.all()
+    assets = Asset.query.all()
     nodes = []
     edges = []
 
-    for device in devices:
-        nodes.append({"id": device.id, "label": device.hostname or device.ip_address})
+    for asset in assets:
+        nodes.append({"id": asset.id, "label": asset.hostname or asset.ip_address})
 
-    for device in devices:
-        for port in device.ports:
+    for asset in assets:
+        for port in asset.ports:
             # Add a dummy edge to show communication (could be refined with scan data)
-            edges.append({"from": device.id, "to": device.id, "label": f"Port {port.port_number}"})
+            edges.append({"from": asset.id, "to": asset.id, "label": f"Port {port.port_number}"})
 
     return jsonify({"nodes": nodes, "edges": edges})
