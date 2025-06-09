@@ -152,17 +152,21 @@
         <h1>Welcome to Lantern!</h1>
         <p>Your comprehensive network analysis and device management solution. Explore its powerful features to gain insights into your network and connected devices.</p>
         <p>Get started by navigating to one of the sections below:</p>
-        <div class="button-group">
-            <a href="/scan" class="nav-button">Scan Network</a>
-            <a href="/network" class="nav-button">View Network</a>
-            <a href="/devices" class="nav-button">Manage Devices</a>
-            <a href="/results" class="nav-button">Review Results</a>
-            <a href="/settings" class="nav-button">App Settings</a>
-            <a href="/about" class="nav-button">About Lantern</a>
+        
+        <div class="menu">
+            <!-- Updated links using url_for and your blueprint endpoints -->
+            <a href="{{ url_for('index_bp.home') }}">Welcome to Lantern</a>
+            <a href="{{ url_for('scan_bp.scan') }}">Scan</a>
+            <a href="{{ url_for('network_bp.network') }}">Network</a>
+            <a href="{{ url_for('devices_bp.devices') }}">Devices</a>
+            <a href="{{ url_for('results_bp.results') }}">Results</a>
+            <a href="{{ url_for('settings_bp.settings') }}">Settings</a>
+            <a href="{{ url_for('about_bp.about') }}">About</a>
         </div>
-        <p class="footer-text">
-            This is your application's default landing page, served by the new 'main' blueprint. You can customize its content and layout in <code>app/templates/index.html</code>.
-        </p>
+        
+        <div class="footer">
+            <a href="/license.html">&copy; 2025 Lantern Security. All rights reserved.</a>
+        </div>
     </div>
 </body>
 </html>
