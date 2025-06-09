@@ -1,43 +1,32 @@
-<!-- templates/network.html -->
-{% extends 'base.html' %}
-
-{% block content %}
-  <h2>Network Topology</h2>
-  <div id="network-graph" style="height: 600px; width: 100%; margin-top: 2rem; background: #1e1e1e; border: 1px solid #444;"></div>
-
-  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-  <script>
-    // Example placeholder data
-    const nodes = new vis.DataSet([
-      { id: 1, label: 'Router' },
-      { id: 2, label: 'Device 1' },
-      { id: 3, label: 'Device 2' }
-    ]);
-
-    const edges = new vis.DataSet([
-      { from: 1, to: 2 },
-      { from: 1, to: 3 }
-    ]);
-
-    const container = document.getElementById('network-graph');
-    const data = { nodes: nodes, edges: edges };
-    const options = {
-      nodes: {
-        color: '#ffcc00',
-        font: { color: '#121212' },
-        shape: 'dot',
-        size: 20
-      },
-      edges: {
-        color: '#f5f5f5'
-      },
-      physics: {
-        stabilization: false
-      },
-      layout: {
-        improvedLayout: true
-      }
-    };
-    const network = new vis.Network(container, data, options);
-  </script>
-{% endblock %}
+<!-- app/templates/navbar.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- FIXED: Changed 'index_bp.home' to 'index_bp.index' -->
+        <a class="navbar-brand" href="{{ url_for('index_bp.index') }}">Lantern</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{{ url_for('scan_bp.scan_home') }}">Scan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('network_bp.network') }}">Network</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('devices_bp.devices') }}">Devices</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('results_bp.results') }}">Results</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('settings_bp.settings') }}">Settings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about_bp.about') }}">About</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
