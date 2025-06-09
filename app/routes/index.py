@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template
 
 # Create a Blueprint named 'main_bp'
-main_bp = Blueprint('main_bp', __name__)
+index_bp = Blueprint('index_bp', __name__)
 
 # Define the root route for this blueprint
-@main_bp.route('/')
+@index_bp.route('/')
 def index():
     """
     Renders the main homepage of the application.
