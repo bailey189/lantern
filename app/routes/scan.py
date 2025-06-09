@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models import Scan, ScanResult, Device, Port
+from app.models import Scan, ScanResult, Asset, Port
 import subprocess
 import xml.etree.ElementTree as ET
 
@@ -33,7 +33,7 @@ def run_scan():
             cmd = ["nmap", "-oX", "-", target]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             output = proc.stdout
-            # Parse output and save devices/ports
+            # Parse output and save Assets/ports
             parse_nmap_xml(output, scan)
         else:
             # Placeholder for other tools or simulate
@@ -60,7 +60,7 @@ def run_scan():
     return jsonify({'scan_id': scan.id, 'message': 'Scan completed successfully'})
 
 def parse_nmap_xml(xml_output, scan):
-    """Parse Nmap XML output and save devices and ports linked to the scan."""
+    """Parse Nmap XML output and save Assets and ports linked to the scan."""
     try:
         root = ET.fromstring(xml_output)
 
@@ -85,25 +85,25 @@ def parse_nmap_xml(xml_output, scan):
                 hostname = hostnames.find('hostname').attrib.get('name')
 
             if ip:
-                device = Device.query.filter_by(ip_address=ip).first()
-                if not device:
-                    device = Device(
+                Asset = Asset.query.filter_by(ip_address=ip).first()
+                if not Asset:
+                    Asset = Asset(
                         ip_address=ip,
                         mac_address=mac,
                         hostname=hostname,
                         last_seen=datetime.utcnow()
                     )
-                    db.session.add(device)
+                    db.session.add(Asset)
                 else:
-                    device.last_seen = datetime.utcnow()
+                    Asset.last_seen = datetime.utcnow()
                     if mac:
-                        device.mac_address = mac
+                        Asset.mac_address = mac
                     if hostname:
-                        device.hostname = hostname
-                db.session.flush()  # Ensure device.id is available
+                        Asset.hostname = hostname
+                db.session.flush()  # Ensure Asset.id is available
 
-                # Link scan result to device
-                # Assuming scan_result has device_id; if not, adjust accordingly
+                # Link scan result to Asset
+                # Assuming scan_result has Asset_id; if not, adjust accordingly
                 # We'll assign this in the calling function or adapt model
 
                 # Parse ports
@@ -118,14 +118,14 @@ def parse_nmap_xml(xml_output, scan):
                         service_name = service_elem.attrib.get('name') if service_elem is not None else None
 
                         existing_port = Port.query.filter_by(
-                            device_id=device.id,
+                            Asset_id=Asset.id,
                             port_number=port_num,
                             protocol=protocol
                         ).first()
 
                         if not existing_port:
                             new_port = Port(
-                                device_id=device.id,
+                                Asset_id=Asset.id,
                                 port_number=port_num,
                                 protocol=protocol,
                                 state=state,
