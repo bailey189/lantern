@@ -1,21 +1,15 @@
+# app/routes/index.py
 from flask import Blueprint, render_template
 
-# Create a Blueprint named 'main_bp'
-index_bp = Blueprint('index_bp', __name__)
+# Your blueprint is named 'index_bp'
+index_bp = Blueprint('index_bp', __name__) # IMPORTANT: Ensure this is 'index_bp' if you also had 'index' previously
 
-# Define the root route for this blueprint
 @index_bp.route('/')
-def index():
+def index(): # CHANGED: Renamed 'home' to 'index' to match Flask's expectation
     """
-    Renders the main homepage of the application.
-    This function will be executed when a GET request is made to the root URL (/).
-    It will look for an 'index.html' file inside the 'templates' folder.
+    Handles requests to the root URL (/).
+    Renders the 'index.html' template located in the 'app/templates/' directory.
+    The 'title' variable is passed to the template for dynamic content.
     """
-    return render_template('index.html')
-
-# You can add other routes specific to your main or general pages here
-# For example:
-# @main_bp.route('/contact')
-# def contact():
-#     return "Contact Us Page"
+    return render_template('index.html', title="Lantern - Home")
 
