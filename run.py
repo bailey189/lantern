@@ -5,6 +5,7 @@ from flask import Flask
 
 # Expected MD5 hash of the correct license key
 VALID_LICENSE_HASH = "54fa7e778bd1c624aa2ac67785f6c798"
+app = Flask(__name__)
 
 def validate_license():
     print("🔐 Lantern License Verification")
@@ -17,6 +18,7 @@ def validate_license():
     else:
         print("❌ Invalid license key. Access denied.")
         return False
+
 
 if __name__ == '__main__':
     if validate_license():
