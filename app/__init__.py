@@ -49,3 +49,4 @@ def create_app(config_object='config.Config'):
         return "<br>".join(sorted(routes))
 
     return app
+
