@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from app.models import db, Device
+from app.models import db, Asset
 
 
 def parse_nmap_xml(file_path):
@@ -25,14 +25,14 @@ def parse_nmap_xml(file_path):
                 os = os_match.attrib.get('name', 'Unknown')
 
         if ip:
-            device = Device.query.filter_by(ip_address=ip).first()
-            if not device:
-                device = Device(ip_address=ip)
-            device.hostname = hostname
-            device.mac_address = mac
-            device.operating_system = os
-            db.session.add(device)
-            hosts.append(device)
+            Asset = Asset.query.filter_by(ip_address=ip).first()
+            if not Asset:
+                Asset = Asset(ip_address=ip)
+            Asset.hostname = hostname
+            Asset.mac_address = mac
+            Asset.operating_system = os
+            db.session.add(Asset)
+            hosts.append(Asset)
 
     db.session.commit()
     return hosts
