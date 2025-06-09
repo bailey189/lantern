@@ -28,7 +28,7 @@
             background-color: #1c1c1c; /* Slightly lighter dark background for container */
             padding: 40px 20px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+            box_shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Subtle shadow */
         }
         /* Lantern logo/heading styling */
         .lantern {
@@ -71,14 +71,14 @@
             transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
             font-weight: bold;
             font-size: 1.05em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Button shadow */
+            box_shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Button shadow */
         }
         /* Menu item hover effect */
         .menu a:hover {
             background: #ffcc00; /* Amber/gold on hover */
             color: #121212; /* Dark text on hover */
             transform: translateY(-3px); /* Lift effect */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); /* Enhanced shadow on hover */
+            box_shadow: 0 6px 15px rgba(0, 0, 0, 0.4); /* Enhanced shadow on hover */
         }
         /* Footer styling */
         .footer {
@@ -143,8 +143,8 @@
         <p>Discover security vulnerabilities and illuminate your network’s hidden risks.</p>
 
         <div class="menu">
-            <a href="{{ url_for('index_bp.home') }}">Welcome to Lantern</a>
-            <!-- THIS LINE IS THE FIX -->
+            <!-- FIXED: Changed 'index_bp.home' to 'index_bp.index' -->
+            <a href="{{ url_for('index_bp.index') }}">Welcome to Lantern</a>
             <a href="{{ url_for('scan_bp.scan_home') }}">Scan</a>
             <a href="{{ url_for('network_bp.network') }}">Network</a>
             <a href="{{ url_for('devices_bp.devices') }}">Devices</a>
