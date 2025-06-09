@@ -16,6 +16,7 @@ def create_app(config_object='config.Config'):
     migrate.init_app(app, db)
 
     # Import and register blueprints
+    from app.routes.index import index_bp
     from app.routes.scan import scan_bp
     from app.routes.network import network_bp
     from app.routes.devices import devices_bp
@@ -23,6 +24,7 @@ def create_app(config_object='config.Config'):
     from app.routes.settings import settings_bp
     from app.routes.about import about_bp
 
+    app.register_blueprint(index_bp)
     app.register_blueprint(scan_bp)
     app.register_blueprint(network_bp)
     app.register_blueprint(devices_bp)
