@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 scan_bp = Blueprint('scan', __name__, url_prefix='/scan')
 
 @scan_bp.route('/')
-def scan_home():
+def scan():
     return "Scan page - use POST /scan/run to start a scan"
 
 @scan_bp.route('/run', methods=['POST'])
