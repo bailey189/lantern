@@ -1,8 +1,8 @@
-<!-- templates/devices.html -->
+<!-- templates/assets.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Discovered Devices</h2>
+  <h2>Discovered Assets</h2>
   <table style="width: 100%; margin-top: 2rem; border-collapse: collapse; background: #1e1e1e; color: #f5f5f5;">
     <thead>
       <tr>
@@ -17,16 +17,16 @@
       </tr>
     </thead>
     <tbody>
-      {% for device in devices %}
+      {% for asset in assets %}
       <tr>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.hostname }}</td>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.ip_address }}</td>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.mac_address }}</td>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.operating_system }}</td>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.device_type }}</td>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.risk_level }}</td>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.username }}</td>
-        <td style="border: 1px solid #444; padding: 10px;">{{ device.password }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.hostname }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.ip_address }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.mac_address }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.operating_system }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.asset_type }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.risk_level }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.username }}</td>
+        <td style="border: 1px solid #444; padding: 10px;">{{ asset.password }}</td>
       </tr>
       {% endfor %}
     </tbody>
