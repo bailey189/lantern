@@ -1,6 +1,7 @@
 import hashlib
 from getpass import getpass
 from app import create_app
+from flask import Flask
 
 # Expected MD5 hash of the correct license key
 VALID_LICENSE_HASH = "54fa7e778bd1c624aa2ac67785f6c798"
