@@ -1,4 +1,4 @@
-<!-- navbar.html -->
+t<!-- navbar.html -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url_for('index') }}">Lantern</a>
@@ -16,7 +16,7 @@
           <a class="nav-link {% if request.endpoint == 'network.network_home' %}active{% endif %}" href="{{ url_for('network.network_home') }}">Network</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'devices.devices_home' %}active{% endif %}" href="{{ url_for('devices.devices_home') }}">Devices</a>
+          <a class="nav-link {% if request.endpoint == 'assets.assets_home' %}active{% endif %}" href="{{ url_for('assets.assets_home') }}">Assets</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.endpoint == 'results.results_home' %}active{% endif %}" href="{{ url_for('results.results_home') }}">Results</a>
