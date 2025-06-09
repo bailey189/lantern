@@ -1,33 +1,32 @@
-t<!-- navbar.html -->
+<!-- app/templates/navbar.html -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('index') }}">Lantern</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'scan.scan_home' %}active{% endif %}" href="{{ url_for('scan.scan_home') }}">Scan</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'network.network_home' %}active{% endif %}" href="{{ url_for('network.network_home') }}">Network</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'assets.assets_home' %}active{% endif %}" href="{{ url_for('assets.assets_home') }}">Assets</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'results.results_home' %}active{% endif %}" href="{{ url_for('results.results_home') }}">Results</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'settings.settings_home' %}active{% endif %}" href="{{ url_for('settings.settings_home') }}">Settings</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint == 'about.about_home' %}active{% endif %}" href="{{ url_for('about.about_home') }}">About</a>
-        </li>
-      </ul>
+    <div class="container-fluid">
+        <!-- Correctly reference the 'index' function within the 'main_bp' blueprint -->
+        <a class="navbar-brand" href="{{ url_for('main_bp.index') }}">Lantern</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{{ url_for('scan_bp.scan') }}">Scan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('network_bp.network') }}">Network</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('devices_bp.devices') }}">Devices</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('results_bp.results') }}">Results</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('settings_bp.settings') }}">Settings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about_bp.about') }}">About</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
