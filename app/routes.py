@@ -6,7 +6,7 @@ bp = Blueprint('main', __name__)
 # Home Redirect
 @bp.route('/')
 def index():
-    return redirect(url_for('main.scan'))
+    return render_template('index.html')
 
 # Scan Page
 @bp.route('/scan', methods=['GET', 'POST'])
