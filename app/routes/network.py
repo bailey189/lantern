@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, jsonify
 from app.models import Asset, Port
 
-network_bp = Blueprint('network', __name__, url_prefix='/network')
+network_bp = Blueprint('network_bp', __name__, url_prefix='/network')
 
 @network_bp.route('/')
 def network():
