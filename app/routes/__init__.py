@@ -18,7 +18,7 @@ def create_app(config_object='config.Config'):
     # Import and register blueprints
     # Import your existing 'index_bp' for the homepage
     from app.routes.index import index_bp # IMPORTANT: Use your existing index.py blueprint
-    from app.routes.scan import scan_x
+    from app.routes.scan import scan_bp
     from app.routes.network import network_bp
     from app.routes.assets import assets_bp
     from app.routes.results import results_bp
@@ -27,7 +27,7 @@ def create_app(config_object='config.Config'):
 
     # Register index_bp to handle the root URL
     app.register_blueprint(index_bp) 
-    app.register_blueprint(scan_x)
+    app.register_blueprint(scan_bp)
     app.register_blueprint(network_bp)
     aapp.register_blueprint(assets_bp)
     app.register_blueprint(results_bp)
