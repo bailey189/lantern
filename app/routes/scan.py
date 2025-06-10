@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from app import db
 from app.models import Scan, ScanResult, Asset, Port
 import subprocess
@@ -9,7 +9,12 @@ scan_bp = Blueprint('scan', __name__, url_prefix='/scan')
 
 @scan_bp.route('/')
 def scan():
-    return "Scan page - use POST /scan/run to start a scan"
+    """
+    Handles requests to the root URL (/).
+    Renders the 'index.html' template located in the 'app/templates/' directory.
+    The 'title' variable is passed to the template for dynamic content.
+    """
+    return render_template('scan.html', title="Lantern - Scan")
 
 @scan_bp.route('/run', methods=['POST'])
 def run_scan():
