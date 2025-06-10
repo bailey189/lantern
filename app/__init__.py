@@ -22,7 +22,7 @@ def create_app(config_object='config.Config'):
     from app.routes.index import index_bp 
     from app.routes.scan import scan_bp 
     from app.routes.network import network_bp 
-    from app.routes.devices import assets_bp 
+    from app.routes.assets import assets_bp 
     from app.routes.results import results_bp 
     from app.routes.settings import settings_bp 
     from app.routes.about import about_bp 
