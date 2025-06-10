@@ -1,10 +1,10 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 assets_bp = Blueprint('assets', __name__, url_prefix="/assets")
 
 @assets_bp.route("/")
 def assets():
-    return "assets Page"
+        return render_template('assets.html', title="Lantern - Assets")
 
 @assets_bp.route('/credentials', methods=['GET', 'POST'])
 def save_credentials():
