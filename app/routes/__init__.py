@@ -20,7 +20,7 @@ def create_app(config_object='config.Config'):
     from app.routes.index import index_bp # IMPORTANT: Use your existing index.py blueprint
     from app.routes.scan import scan_bp
     from app.routes.network import network_bp
-    from app.routes.devices import devices_bp
+    from app.routes.assets import assets_bp
     from app.routes.results import results_bp
     from app.routes.settings import settings_bp
     from app.routes.about import about_bp
@@ -29,7 +29,7 @@ def create_app(config_object='config.Config'):
     app.register_blueprint(index_bp) 
     app.register_blueprint(scan_bp)
     app.register_blueprint(network_bp)
-    app.register_blueprint(devices_bp)
+    aapp.register_blueprint(assets_bp)
     app.register_blueprint(results_bp)
     app.register_blueprint(settings_bp)
     app.register_blueprint(about_bp)
