@@ -124,6 +124,21 @@ def discovery_scan():
 
     return render_template('scan.html', title="Lantern - Scan", discovery_result=discovery_result, error=error)
 
+@scan_bp.route('/erase_all', methods=['POST'])
+def erase_all():
+    try:
+        # Delete from child tables first due to FK constraints
+        db.session.query(Port).delete()
+        db.session.query(ScanResult).delete()
+        db.session.query(Scan).delete()
+        db.session.query(Asset).delete()
+        db.session.commit()
+        msg = "All scan, asset, and port records have been erased."
+    except Exception as e:
+        db.session.rollback()
+        msg = f"Error erasing records: {e}"
+    return render_template('scan.html', title="Lantern - Scan", error=None, discovery_result=None, portscan_result=None, arpscan_result=None, erase_msg=msg)
+
 @scan_bp.route('/port', methods=['POST'])
 def port_scan():
     subnet = request.form.get('subnet')
