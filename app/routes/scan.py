@@ -43,7 +43,7 @@ def discovery_scan():
         try:
             # Use grepable output for easier parsing
             started_at=datetime.utcnow()
-            cmd = ["sudo","nmap", "-sn", "-oG", "-", subnet]
+            cmd = ["nmap", "-sn", "-oG", "-", subnet]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             discovery_result = proc.stdout
             finished_at=datetime.utcnow()
@@ -80,7 +80,7 @@ def discovery_scan():
             for asset in unknown_assets:
                 try:
                     os_scan_cmd = [
-                        "nmap", "-O", "-sV", "--script=afp-serverinfo", asset.ip_address
+                       "sudo", "nmap", "-O", "-sV", "--script=afp-serverinfo", asset.ip_address
                     ]
                     os_proc = subprocess.run(os_scan_cmd, capture_output=True, text=True, timeout=60)
                     os_output = os_proc.stdout
