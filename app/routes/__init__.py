@@ -29,7 +29,7 @@ def create_app(config_object='config.Config'):
     app.register_blueprint(index_bp) 
     app.register_blueprint(scan_bp)
     app.register_blueprint(network_bp)
-    aapp.register_blueprint(assets_bp)
+    app.register_blueprint(assets_bp)
     app.register_blueprint(results_bp)
     app.register_blueprint(settings_bp)
     app.register_blueprint(about_bp)
