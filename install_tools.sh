@@ -6,7 +6,7 @@ sudo apt update
 
 echo "Installing packages from apt..."
 sudo apt install -y \
-  nmap masscan arp-scan dhcpdump kismet aircrack-ng hping3 nikto wapiti skipfish sqlmap ansible curl
+  nmap masscan arp-scan dhcpdump aircrack-ng hping3 nikto wapiti sqlmap ansible curl
 
 echo "Installing Trivy..."
 curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
