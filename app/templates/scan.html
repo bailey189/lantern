@@ -73,5 +73,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Disable all scan buttons and show spinner on submit
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    // Disable all scan buttons
+                    document.querySelectorAll('button[type="submit"]').forEach(btn => {
+                        btn.disabled = true;
+                    });
+                    // Show scanning spinner/message
+                    let scanMsg = document.getElementById('scan-status');
+                    if (!scanMsg) {
+                        scanMsg = document.createElement('div');
+                        scanMsg.id = 'scan-status';
+                        scanMsg.className = 'alert alert-info mt-3';
+                        scanMsg.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Scanning in progress...';
+                        form.parentNode.appendChild(scanMsg);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
