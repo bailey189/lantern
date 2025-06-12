@@ -96,7 +96,7 @@ class RemediationFix(db.Model):
     expected_disruption = db.Column(db.String(50)) # e.g., 'Minimal', 'Service Restart', 'Outage'
 
     rules = db.relationship('MisconfigurationRule', backref='default_fix', lazy=True)
-     actions = db.relationship(
+    actions = db.relationship(
         "RemediationAction",
         backref="fix",
         foreign_keys="[RemediationAction.fix_id]"  # Specify the correct foreign key column here
