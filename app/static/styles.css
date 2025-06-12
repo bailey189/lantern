@@ -1,0 +1,27 @@
+/* Lantern Custom Styles */
+
+body {
+    background-color: #f8f9fa;
+}
+
+h2 {
+    margin-top: 20px;
+    color: #343a40;
+}
+
+.card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.btn-primary, .btn-secondary, .btn-success, .btn-warning {
+    min-width: 160px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.container {
+    max-width: 900px;
+}
