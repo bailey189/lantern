@@ -50,3 +50,8 @@ chmod +x update_lantern.sh
 chmod +x setup.sh
 
 echo ">>> Update complete!"
+
+cd /home/pi/lantern
+source venv/bin/activate
+python3 run.py
+
