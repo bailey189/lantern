@@ -96,7 +96,11 @@ class RemediationFix(db.Model):
     expected_disruption = db.Column(db.String(50)) # e.g., 'Minimal', 'Service Restart', 'Outage'
 
     rules = db.relationship('MisconfigurationRule', backref='default_fix', lazy=True)
-    actions = db.relationship('RemediationAction', backref='applied_fix', lazy=True)
+     actions = db.relationship(
+        "RemediationAction",
+        backref="fix",
+        foreign_keys="[RemediationAction.fix_id]"  # Specify the correct foreign key column here
+    )
 
     def __repr__(self):
         return f"<RemediationFix {self.fix_id}>"
@@ -349,7 +353,7 @@ class RemediationAction(db.Model):
     success_status = db.Column(db.String(50), nullable=False) # 'Success', 'Failure', 'Partial', 'Pending Re-scan'
     new_issues_introduced = db.Column(db.Boolean, nullable=False, default=False)
     human_override_reason = db.Column(db.Text) # Why humans deviated from default/AI suggestion
-    
+    fix_id = db.Column(db.Integer, db.ForeignKey('remediation_fix.id'))
     # Fields to store AI's prediction for training/comparison
     ai_recommended_priority = db.Column(db.String(50))
     ai_recommended_fix_id = db.Column(db.String(255), db.ForeignKey('remediation_fixes.fix_id'))
@@ -361,21 +365,32 @@ class RemediationAction(db.Model):
     def __repr__(self):
         return f"<RemediationAction {self.id} for {self.misconfig_id} - Priority: {self.actual_priority_assigned}>"
 
-# --- Old Vulnerability Table (replaced by MisconfigurationRule and AssetMisconfiguration) ---
-# I've commented out the original Vulnerability class.
-# The concept of a 'vulnerability' is now covered by:
-# 1. MisconfigurationRule (the generic rule/definition of a misconfig/vuln)
-# 2. AssetMisconfiguration (a specific instance of that rule being violated on an asset)
-# 3. CVE/CWE (standard identifiers for vulnerabilities/weaknesses)
+# --- Lookup Tables (Normalized Data) ---
+# AssetTier: Stores asset criticality tiers (e.g., Production, Development).
+# BusinessUnit: Stores business units or departments that own assets.
+# DataClassification: Stores data sensitivity levels (e.g., Public, Confidential).
+# NetworkSegment: Stores network segmentation information for assets.
+# Team: Stores teams responsible for assets.
+# CVE: Stores Common Vulnerabilities and Exposures entries.
+# CWE: Stores Common Weakness Enumeration entries.
 
-# class Vulnerability(db.Model):
-#     __tablename__ = 'vulnerabilities'
-#     id = db.Column(db.Integer, primary_key=True)
-#     device_id = db.Column(db.Integer, db.ForeignKey('devices.id'), nullable=False)
-#     scan_result_id = db.Column(db.Integer, db.ForeignKey('scan_results.id'), nullable=True)
-#     cve_id = db.Column(db.String(50), nullable=True)  # CVE identifier if applicable
-#     description = db.Column(db.Text, nullable=False)
-#     severity = db.Column(db.String(32), nullable=True)  # e.g. low, medium, high, critical
-#     found_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-#     scan_result = db.relationship('ScanResult', backref=db.backref('vulnerabilities', lazy=True))
+# --- Core Models ---
+# RemediationFix: Stores remediation scripts/fixes for misconfigurations.
+# ThreatIntelligence: Stores threat intelligence data (e.g., exploit status, ransomware association).
+# Scan: Stores information about each scan performed (tool, target, timestamps).
+# Asset: Stores information about each asset (host/device) in the environment.
+# Credential: Stores credentials associated with assets.
+# Port: Stores open ports/services for each asset.
+# Route: Stores network routes for each asset.
+# InstalledApplication: Stores installed applications on each asset.
+# SecurityControl: Stores security controls deployed on each asset.
+# ScanResult: Stores results of each scan, linking to assets and findings.
+# MisconfigurationRule: Stores rules for detecting misconfigurations (with links to CVEs/CWEs).
+# AssetMisconfiguration: Stores specific misconfiguration findings for assets during scans.
+# RemediationAction: Stores actions taken to remediate misconfigurations, including human and AI decisions.
+
+# --- Junction Tables for Many-to-Many Relationships ---
+# RuleCVE: Associates misconfiguration rules with CVEs (many-to-many).
+# RuleCWE: Associates misconfiguration rules with CWEs (many-to-many).
+# MisconfigThreatIntel: Associates asset misconfigurations with threat intelligence entries (many-to-many).
+# ThreatIntelligenceCVE: Associates threat intelligence entries with CVEs (many-to-many).
