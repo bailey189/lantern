@@ -99,7 +99,7 @@ class RemediationFix(db.Model):
     actions = db.relationship(
         "RemediationAction",
         backref="fix",
-        foreign_keys="[RemediationAction.fix_id]"  # Specify the correct foreign key column here
+        foreign_keys="[RemediationAction.fix_id]"
     )
 
     def __repr__(self):
@@ -353,7 +353,7 @@ class RemediationAction(db.Model):
     success_status = db.Column(db.String(50), nullable=False) # 'Success', 'Failure', 'Partial', 'Pending Re-scan'
     new_issues_introduced = db.Column(db.Boolean, nullable=False, default=False)
     human_override_reason = db.Column(db.Text) # Why humans deviated from default/AI suggestion
-    fix_id = db.Column(db.Integer, db.ForeignKey('remediation_fix.id'))
+    fix_id = db.Column(db.String(255), db.ForeignKey('remediation_fixes.fix_id'))
     # Fields to store AI's prediction for training/comparison
     ai_recommended_priority = db.Column(db.String(50))
     ai_recommended_fix_id = db.Column(db.String(255), db.ForeignKey('remediation_fixes.fix_id'))
