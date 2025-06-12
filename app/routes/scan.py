@@ -41,10 +41,37 @@ def discovery_scan():
         db.session.add(scan)
         db.session.commit()
         try:
-            cmd = ["nmap", "-sn", subnet]
+            # Use grepable output for easier parsing
+            cmd = ["nmap", "-sn", "-oG", "-", subnet]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             discovery_result = proc.stdout
-            # Optionally parse and save assets here if needed
+
+            # Parse nmap output and update Asset table
+            for line in discovery_result.splitlines():
+                if line.startswith("Host:") or "Status: Up" in line:
+                    # Example: "Host: 192.168.1.10 ()	Status: Up"
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        ip = parts[1]
+                        # Try to get hostname if present
+                        hostname = None
+                        if "(" in line and ")" in line:
+                            hostname = line.split("(")[1].split(")")[0].strip()
+                        # Check if asset exists
+                        asset = Asset.query.filter_by(ip_address=ip).first()
+                        if asset:
+                            asset.last_seen = datetime.utcnow()
+                            if hostname:
+                                asset.hostname = hostname
+                        else:
+                            asset = Asset(
+                                ip_address=ip,
+                                hostname=hostname,
+                                last_seen=datetime.utcnow()
+                            )
+                            db.session.add(asset)
+            db.session.commit()
+
             scan_result = ScanResult(
                 scan_id=scan.id,
                 output=discovery_result,
