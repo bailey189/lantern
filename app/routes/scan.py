@@ -6,7 +6,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 import netifaces
 
-scan_bp = Blueprint('scan', url_prefix='/scan')
+scan_bp = Blueprint('scan', __name__, url_prefix='/scan')
 
 def get_default_subnet():
     # This will get the first non-loopback IPv4 address and its subnet
