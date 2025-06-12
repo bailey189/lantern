@@ -80,7 +80,7 @@ def discovery_scan():
             for asset in unknown_assets:
                 try:
                     os_scan_cmd = [
-                        "nmap", "-O", "-sV", "--script=mac-lookup", asset.ip_address
+                        "nmap", "-O", "-sV", "--script=afp-serverinfo", asset.ip_address
                     ]
                     os_proc = subprocess.run(os_scan_cmd, capture_output=True, text=True, timeout=60)
                     os_output = os_proc.stdout
