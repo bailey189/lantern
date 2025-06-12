@@ -42,6 +42,7 @@ def discovery_scan():
         db.session.commit()
         try:
             # Use grepable output for easier parsing
+            started_at=datetime.utcnow()
             cmd = ["nmap", "-sn", "-oG", "-", subnet]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             discovery_result = proc.stdout
@@ -75,10 +76,10 @@ def discovery_scan():
             scan_result = ScanResult(
                 scan_id=scan.id,
                 output=discovery_result,
-                created_at=datetime.utcnow()
+                started_at=started_at,
+                finished_at=datetime.utcnow()
             )
             db.session.add(scan_result)
-            scan.finished_at = datetime.utcnow()
             db.session.commit()
         except Exception as e:
             db.session.rollback()
