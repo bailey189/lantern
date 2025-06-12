@@ -96,10 +96,12 @@ class RemediationFix(db.Model):
     expected_disruption = db.Column(db.String(50)) # e.g., 'Minimal', 'Service Restart', 'Outage'
 
     rules = db.relationship('MisconfigurationRule', backref='default_fix', lazy=True)
+    # Specify primaryjoin and foreign_keys to resolve ambiguity due to multiple FKs in RemediationAction
     actions = db.relationship(
         "RemediationAction",
         backref="fix",
-        foreign_keys="[RemediationAction.fix_id]"
+        primaryjoin="RemediationFix.fix_id==RemediationAction.fix_id",
+        foreign_keys="RemediationAction.fix_id"
     )
 
     def __repr__(self):
@@ -353,14 +355,22 @@ class RemediationAction(db.Model):
     success_status = db.Column(db.String(50), nullable=False) # 'Success', 'Failure', 'Partial', 'Pending Re-scan'
     new_issues_introduced = db.Column(db.Boolean, nullable=False, default=False)
     human_override_reason = db.Column(db.Text) # Why humans deviated from default/AI suggestion
+
+    # This is the main FK for the RemediationFix.actions relationship
     fix_id = db.Column(db.String(255), db.ForeignKey('remediation_fixes.fix_id'))
+
     # Fields to store AI's prediction for training/comparison
     ai_recommended_priority = db.Column(db.String(50))
     ai_recommended_fix_id = db.Column(db.String(255), db.ForeignKey('remediation_fixes.fix_id'))
     ai_confidence_score = db.Column(db.Numeric(5, 2)) # 0.00-1.00
 
     misconfiguration_finding = db.relationship('AssetMisconfiguration', back_populates='remediation_actions')
-    ai_recommended_fix = db.relationship('RemediationFix', foreign_keys=[ai_recommended_fix_id], backref='ai_recommendations', lazy=True)
+    ai_recommended_fix = db.relationship(
+        'RemediationFix',
+        foreign_keys=[ai_recommended_fix_id],
+        backref='ai_recommendations',
+        lazy=True
+    )
 
     def __repr__(self):
         return f"<RemediationAction {self.id} for {self.misconfig_id} - Priority: {self.actual_priority_assigned}>"
