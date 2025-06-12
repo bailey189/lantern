@@ -4,12 +4,29 @@ from app import db
 from app.models import Scan, ScanResult, Asset, Port
 import subprocess
 import xml.etree.ElementTree as ET
+import netifaces
 
-scan_bp = Blueprint('scan', __name__, url_prefix='/scan')
+scan_bp = Blueprint('scan', url_prefix='/scan')
+
+def get_default_subnet():
+    # This will get the first non-loopback IPv4 address and its subnet
+    for iface in netifaces.interfaces():
+        addrs = netifaces.ifaddresses(iface)
+        if netifaces.AF_INET in addrs:
+            for addr in addrs[netifaces.AF_INET]:
+                ip = addr.get('addr')
+                netmask = addr.get('netmask')
+                if ip and netmask and not ip.startswith('127.'):
+                    # Calculate CIDR
+                    bits = sum([bin(int(x)).count('1') for x in netmask.split('.')])
+                    subnet = f"{ip.rsplit('.',1)[0]}.0/{bits}"
+                    return subnet
+    return "192.168.1.0/24"
 
 @scan_bp.route('/', methods=['GET'])
 def scan():
-    return render_template('scan.html', title="Lantern - Scan")
+    subnet = get_default_subnet()
+    return render_template('scan.html', title="Lantern - Scan", subnet=subnet)
 
 @scan_bp.route('/discovery', methods=['POST'])
 def discovery_scan():
