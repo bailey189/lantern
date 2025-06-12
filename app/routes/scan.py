@@ -75,6 +75,41 @@ def discovery_scan():
                             db.session.add(asset)
             db.session.commit()
 
+            # After discovery, run OS/service scan for assets with unknown OS
+            unknown_assets = Asset.query.filter_by(os_type="Unknown").all()
+            for asset in unknown_assets:
+                try:
+                    os_scan_cmd = [
+                        "nmap", "-O", "-sV", "--script=mac-lookup", asset.ip_address
+                    ]
+                    os_proc = subprocess.run(os_scan_cmd, capture_output=True, text=True, timeout=60)
+                    os_output = os_proc.stdout
+
+                    # Basic parsing for OS and service info
+                    os_type = "Unknown"
+                    os_version = "Unknown"
+                    mac_address = None
+
+                    for line in os_output.splitlines():
+                        if line.strip().startswith("OS details:"):
+                            os_type = line.split(":", 1)[1].strip()
+                        elif line.strip().startswith("MAC Address:"):
+                            mac_address = line.split(":", 1)[1].split()[0].strip()
+                        elif "Running:" in line:
+                            os_type = line.split(":", 1)[1].strip()
+                        elif "Service Info:" in line:
+                            os_version = line.split(":", 1)[1].strip()
+
+                    asset.os_type = os_type
+                    asset.os_version = os_version
+                    if mac_address:
+                        asset.mac_address = mac_address
+
+                    db.session.commit()
+                except Exception as e:
+                    # Optionally log or handle errors for individual asset scans
+                    continue
+
             scan_result = ScanResult(
                 scan_id=scan.id,
                 output=discovery_result,
