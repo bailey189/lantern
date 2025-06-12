@@ -50,7 +50,6 @@ def discovery_scan():
             # Parse nmap output and update Asset table
             for line in discovery_result.splitlines():
                 if line.startswith("Host:") or "Status: Up" in line:
-                    # Example: "Host: 192.168.1.10 ()	Status: Up"
                     parts = line.split()
                     if len(parts) >= 2:
                         ip = parts[1]
@@ -61,14 +60,17 @@ def discovery_scan():
                         # Check if asset exists
                         asset = Asset.query.filter_by(ip_address=ip).first()
                         if asset:
-                            asset.last_seen = datetime.utcnow()
+                            asset.last_scanned_date = datetime.utcnow()
                             if hostname:
-                                asset.hostname = hostname
+                                asset.name = hostname
                         else:
                             asset = Asset(
                                 ip_address=ip,
-                                hostname=hostname,
-                                last_seen=datetime.utcnow()
+                                name=hostname or ip,
+                                os_type="Unknown",        # Placeholder, update if you can detect
+                                os_version="Unknown",     # Placeholder, update if you can detect
+                                last_scanned_date=datetime.utcnow(),
+                                is_active=True
                             )
                             db.session.add(asset)
             db.session.commit()
