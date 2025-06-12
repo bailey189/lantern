@@ -46,7 +46,7 @@ def discovery_scan():
             cmd = ["nmap", "-sn", "-oG", "-", subnet]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             discovery_result = proc.stdout
-
+            finished_at=datetime.utcnow()
             # Parse nmap output and update Asset table
             for line in discovery_result.splitlines():
                 if line.startswith("Host:") or "Status: Up" in line:
@@ -79,7 +79,7 @@ def discovery_scan():
                 scan_id=scan.id,
                 output=discovery_result,
                 started_at=started_at,
-                finished_at=datetime.utcnow()
+                finished_at=finished_at
             )
             db.session.add(scan_result)
             db.session.commit()

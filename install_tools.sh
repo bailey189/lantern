@@ -31,4 +31,7 @@ curl -L "$AIPSURL" -o "$TMPDEB"
 sudo dpkg -i "$TMPDEB" || sudo apt-get install -f -y
 rm -f "$TMPDEB"
 
+cd /usr/share/nmap/scripts
+wget https://raw.githubusercontent.com/scipag/vulscan/master/vulscan.nse
+
 echo "All tools installed successfully."
