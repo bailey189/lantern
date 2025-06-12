@@ -43,7 +43,7 @@ def discovery_scan():
         try:
             # Use grepable output for easier parsing
             started_at=datetime.utcnow()
-            cmd = ["nmap", "-sn", "-oG", "-", subnet]
+            cmd = ["sudo","nmap", "-sn", "-oG", "-", subnet]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             discovery_result = proc.stdout
             finished_at=datetime.utcnow()
