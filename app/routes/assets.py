@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, jsonify
-from app.models import Asset, Credential, AssetTier, AssetClassification
+from app.models import Asset, Credential, AssetTier, DataClassification
 from app import db
 
 assets_bp = Blueprint('assets', __name__, url_prefix="/assets")
