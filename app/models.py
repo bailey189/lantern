@@ -227,15 +227,14 @@ class Port(db.Model):
 class Route(db.Model):
     __tablename__ = 'routes'
     id = db.Column(db.Integer, primary_key=True)
-    asset_id = db.Column(UUID(as_uuid=True), db.ForeignKey('assets.id'), nullable=False) # Changed from device_id
-    destination = db.Column(INET, nullable=False) # destination IP or subnet
-    gateway = db.Column(INET, nullable=False) # gateway IP
+    asset_id = db.Column(UUID(as_uuid=True), db.ForeignKey('assets.id'), nullable=False)
+    destination = db.Column(INET)
+    gateway = db.Column(INET)
     interface = db.Column(db.String(64))
     metric = db.Column(db.Integer)
-    hop_number = db.Column(db.Integer, nullable=False)  # Order of the hop in the route
-    hop_ip = db.Column(INET, nullable=False)            # IP address of the hop
+    hop_number = db.Column(db.Integer, nullable=False)
+    hop_ip = db.Column(INET, nullable=False)
     last_updated = db.Column(db.DateTime, default=datetime.utcnow)
-    
     asset = db.relationship('Asset', back_populates='routes')
 
     def __repr__(self):
