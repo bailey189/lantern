@@ -41,23 +41,20 @@ def discovery_scan():
         db.session.add(scan)
         db.session.commit()
         try:
-            # Use grepable output for easier parsing
-            started_at=datetime.utcnow()
+            started_at = datetime.utcnow()
             cmd = ["nmap", "-sn", "-oG", "-", subnet]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             discovery_result = proc.stdout
-            finished_at=datetime.utcnow()
+            finished_at = datetime.utcnow()
             # Parse nmap output and update Asset table
             for line in discovery_result.splitlines():
                 if line.startswith("Host:") or "Status: Up" in line:
                     parts = line.split()
                     if len(parts) >= 2:
                         ip = parts[1]
-                        # Try to get hostname if present
                         hostname = None
                         if "(" in line and ")" in line:
                             hostname = line.split("(")[1].split(")")[0].strip()
-                        # Check if asset exists
                         asset = Asset.query.filter_by(ip_address=ip).first()
                         if asset:
                             asset.last_scanned_date = datetime.utcnow()
@@ -67,8 +64,8 @@ def discovery_scan():
                             asset = Asset(
                                 ip_address=ip,
                                 name=hostname or ip,
-                                os_type="Unknown",        # Placeholder, update if you can detect
-                                os_version="Unknown",     # Placeholder, update if you can detect
+                                os_type="Unknown",
+                                os_version="Unknown",
                                 last_scanned_date=datetime.utcnow(),
                                 is_active=True
                             )
@@ -80,12 +77,11 @@ def discovery_scan():
             for asset in unknown_assets:
                 try:
                     os_scan_cmd = [
-                       "sudo", "nmap", "-O",  asset.ip_address
+                        "sudo", "nmap", "-O", "-sV", "--script=mac-lookup", asset.ip_address
                     ]
                     os_proc = subprocess.run(os_scan_cmd, capture_output=True, text=True, timeout=60)
                     os_output = os_proc.stdout
 
-                    # Basic parsing for OS and service info
                     os_type = "Unknown"
                     os_version = "Unknown"
                     mac_address = None
@@ -105,9 +101,59 @@ def discovery_scan():
 
                     db.session.commit()
                 except Exception as e:
-                    # Optionally log or handle errors for individual asset scans
                     continue
-            
+
+            # For each asset, run nmap --traceroute and update the routes table
+            from app.models import Route  # Import here to avoid circular import
+            for asset in Asset.query.all():
+                try:
+                    traceroute_cmd = [
+                        "sudo", "nmap", "--traceroute", "-Pn", "-n", asset.ip_address
+                    ]
+                    traceroute_proc = subprocess.run(traceroute_cmd, capture_output=True, text=True, timeout=90)
+                    traceroute_output = traceroute_proc.stdout
+
+                    # Parse traceroute output for hops
+                    hops = []
+                    in_traceroute = False
+                    for line in traceroute_output.splitlines():
+                        if line.strip().startswith("TRACEROUTE"):
+                            in_traceroute = True
+                            continue
+                        if in_traceroute:
+                            if not line.strip():
+                                break
+                            hop_parts = line.strip().split()
+                            if len(hop_parts) >= 2 and hop_parts[0].isdigit():
+                                hop_ip = hop_parts[1]
+                                hops.append(hop_ip)
+                    # Remove old routes for this asset
+                    Route.query.filter_by(asset_id=asset.id).delete()
+                    # Add new routes
+                    for hop_num, hop_ip in enumerate(hops, start=1):
+                        route = Route(asset_id=asset.id, hop_number=hop_num, hop_ip=hop_ip)
+                        db.session.add(route)
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    continue
+
+            # Add default gateway to the Route table for each asset
+            import netifaces
+            gateways = netifaces.gateways()
+            default_gateway = None
+            if 'default' in gateways and netifaces.AF_INET in gateways['default']:
+                default_gateway = gateways['default'][netifaces.AF_INET][0]
+            if default_gateway:
+                for asset in Asset.query.all():
+                    # Only add if not already present for this asset
+                    from app.models import Route
+                    exists = Route.query.filter_by(asset_id=asset.id, hop_ip=default_gateway).first()
+                    if not exists:
+                        route = Route(asset_id=asset.id, hop_number=0, hop_ip=default_gateway)
+                        db.session.add(route)
+                db.session.commit()
+
             scan_result = ScanResult(
                 scan_id=scan.id,
                 output=discovery_result,
