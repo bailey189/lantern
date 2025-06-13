@@ -103,8 +103,10 @@ def discovery_scan():
                 except Exception as e:
                     continue
 
+            # Use the Route model schema from models.py
+            from app.models import Route  # Ensure this matches your models.py
+
             # For each asset, run nmap --traceroute and update the routes table
-            from app.models import Route  # Import here to avoid circular import
             for asset in Asset.query.all():
                 try:
                     traceroute_cmd = [
@@ -129,9 +131,13 @@ def discovery_scan():
                                 hops.append(hop_ip)
                     # Remove old routes for this asset
                     Route.query.filter_by(asset_id=asset.id).delete()
-                    # Add new routes
+                    # Add new routes using the schema from models.py
                     for hop_num, hop_ip in enumerate(hops, start=1):
-                        route = Route(asset_id=asset.id, hop_number=hop_num, hop_ip=hop_ip)
+                        route = Route(
+                            asset_id=asset.id,
+                            hop_number=hop_num,
+                            hop_ip=hop_ip
+                        )
                         db.session.add(route)
                     db.session.commit()
                 except Exception as e:
@@ -146,11 +152,13 @@ def discovery_scan():
                 default_gateway = gateways['default'][netifaces.AF_INET][0]
             if default_gateway:
                 for asset in Asset.query.all():
-                    # Only add if not already present for this asset
-                    from app.models import Route
                     exists = Route.query.filter_by(asset_id=asset.id, hop_ip=default_gateway).first()
                     if not exists:
-                        route = Route(asset_id=asset.id, hop_number=0, hop_ip=default_gateway)
+                        route = Route(
+                            asset_id=asset.id,
+                            hop_number=0,
+                            hop_ip=default_gateway
+                        )
                         db.session.add(route)
                 db.session.commit()
 

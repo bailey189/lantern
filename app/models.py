@@ -232,12 +232,14 @@ class Route(db.Model):
     gateway = db.Column(INET, nullable=False) # gateway IP
     interface = db.Column(db.String(64))
     metric = db.Column(db.Integer)
+    hop_number = db.Column(db.Integer, nullable=False)  # Order of the hop in the route
+    hop_ip = db.Column(INET, nullable=False)            # IP address of the hop
     last_updated = db.Column(db.DateTime, default=datetime.utcnow)
     
     asset = db.relationship('Asset', back_populates='routes')
 
     def __repr__(self):
-        return f"<Route {self.destination} via {self.gateway} on {self.asset_id}>"
+        return f"<Route hop {self.hop_number} ({self.hop_ip}) for {self.asset_id}>"
 
 class InstalledApplication(db.Model):
     __tablename__ = 'installed_applications'
