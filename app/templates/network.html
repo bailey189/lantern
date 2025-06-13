@@ -21,12 +21,76 @@
     <div class="container mt-4">
         <h2>Network Topology</h2>
         <div id="network"></div>
+
+        <!-- Update Setting Controls -->
+        <div class="mt-4">
+            <label for="setting-select" class="form-label fw-bold">Update setting</label>
+            <div class="input-group mb-3" style="max-width:400px;">
+                <select class="form-select" id="setting-select">
+                    <option value="Tier">Tier</option>
+                    <option value="Classification">Classification</option>
+                    <option value="Credentials">Credentials</option>
+                </select>
+                <button class="btn btn-primary" id="go-btn" type="button">Go</button>
+            </div>
+        </div>
+
+        <!-- Asset Info Tables (hidden by default) -->
+        <div id="asset-tier-info" class="mt-4" style="display:none;">
+            <h5>Asset Tier Information</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Asset Name</th>
+                        <th>IP Address</th>
+                        <th>Tier</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody id="asset-tier-table-body"></tbody>
+            </table>
+        </div>
+        <div id="asset-classification-info" class="mt-4" style="display:none;">
+            <h5>Asset Classification Information</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Asset Name</th>
+                        <th>IP Address</th>
+                        <th>Classification</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody id="asset-classification-table-body"></tbody>
+            </table>
+        </div>
+        <div id="asset-credentials-info" class="mt-4" style="display:none;">
+            <h5>Asset Credentials</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Asset Name</th>
+                        <th>IP Address</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody id="asset-credentials-table-body"></tbody>
+            </table>
+        </div>
     </div>
     <script>
+        let network, selectedAssetId = null, assetData = {};
+
         // Fetch network data from Flask endpoint
         fetch('/network/data')
             .then(response => response.json())
             .then(data => {
+                // Store asset info for later lookup
+                data.nodes.forEach(node => {
+                    assetData[node.id] = node;
+                });
+
                 // Create a vis.js network
                 var container = document.getElementById('network');
                 var nodes = new vis.DataSet(data.nodes);
@@ -47,8 +111,108 @@
                         barnesHut: { gravitationalConstant: -30000 }
                     }
                 };
-                new vis.Network(container, networkData, options);
+                network = new vis.Network(container, networkData, options);
+
+                // Node selection event
+                network.on("selectNode", function(params) {
+                    let setting = document.getElementById('setting-select').value;
+                    if (params.nodes.length > 0) {
+                        selectedAssetId = params.nodes[0];
+                        if (setting === "Tier") {
+                            showAssetTierInfo(selectedAssetId);
+                        } else if (setting === "Classification") {
+                            showAssetClassificationInfo(selectedAssetId);
+                        } else if (setting === "Credentials") {
+                            showAssetCredentialsInfo(selectedAssetId);
+                        }
+                    }
+                });
             });
+
+        // Go button logic
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('go-btn').addEventListener('click', function() {
+                let setting = document.getElementById('setting-select').value;
+                selectedAssetId = null;
+                document.getElementById('asset-tier-info').style.display = 'none';
+                document.getElementById('asset-classification-info').style.display = 'none';
+                document.getElementById('asset-credentials-info').style.display = 'none';
+                if (setting === "Tier") {
+                    alert("Select an asset node on the map to view its tier.");
+                } else if (setting === "Classification") {
+                    alert("Select an asset node on the map to view its classification.");
+                } else if (setting === "Credentials") {
+                    alert("Select an asset node on the map to view its credentials.");
+                }
+            });
+        });
+
+        // Show asset tier info table for selected asset
+        function showAssetTierInfo(assetId) {
+            fetch(`/assets/tier/${assetId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tbody = document.getElementById('asset-tier-table-body');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td>${data.asset_name}</td>
+                            <td>${data.ip_address}</td>
+                            <td>${data.tier_name || "Not Set"}</td>
+                            <td>${data.tier_description || ""}</td>
+                        </tr>
+                    `;
+                    document.getElementById('asset-tier-info').style.display = '';
+                    document.getElementById('asset-classification-info').style.display = 'none';
+                    document.getElementById('asset-credentials-info').style.display = 'none';
+                });
+        }
+
+        // Show asset classification info table for selected asset
+        function showAssetClassificationInfo(assetId) {
+            fetch(`/assets/classification/${assetId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tbody = document.getElementById('asset-classification-table-body');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td>${data.asset_name}</td>
+                            <td>${data.ip_address}</td>
+                            <td>${data.classification_name || "Not Set"}</td>
+                            <td>${data.classification_description || ""}</td>
+                        </tr>
+                    `;
+                    document.getElementById('asset-tier-info').style.display = 'none';
+                    document.getElementById('asset-classification-info').style.display = '';
+                    document.getElementById('asset-credentials-info').style.display = 'none';
+                });
+        }
+
+        // Show asset credentials info table for selected asset
+        function showAssetCredentialsInfo(assetId) {
+            fetch(`/assets/credentials/${assetId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tbody = document.getElementById('asset-credentials-table-body');
+                    tbody.innerHTML = "";
+                    if (data.credentials && data.credentials.length > 0) {
+                        data.credentials.forEach(cred => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${data.asset_name}</td>
+                                    <td>${data.ip_address}</td>
+                                    <td>${cred.username}</td>
+                                    <td>${cred.password}</td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="4">No credentials found.</td></tr>`;
+                    }
+                    document.getElementById('asset-tier-info').style.display = 'none';
+                    document.getElementById('asset-classification-info').style.display = 'none';
+                    document.getElementById('asset-credentials-info').style.display = '';
+                });
+        }
     </script>
 </body>
 </html>
