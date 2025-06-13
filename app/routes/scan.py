@@ -80,7 +80,7 @@ def discovery_scan():
             for asset in unknown_assets:
                 try:
                     os_scan_cmd = [
-                       "sudo", "nmap", "-O", "-sV", "--script=afp-serverinfo", asset.ip_address
+                       "sudo", "nmap", "-O",  asset.ip_address
                     ]
                     os_proc = subprocess.run(os_scan_cmd, capture_output=True, text=True, timeout=60)
                     os_output = os_proc.stdout
@@ -95,10 +95,8 @@ def discovery_scan():
                             os_type = line.split(":", 1)[1].strip()
                         elif line.strip().startswith("MAC Address:"):
                             mac_address = line.split(":", 1)[1].split()[0].strip()
-                        elif "Running:" in line:
+                        elif "Running" in line:
                             os_type = line.split(":", 1)[1].strip()
-                        elif "Service Info:" in line:
-                            os_version = line.split(":", 1)[1].strip()
 
                     asset.os_type = os_type
                     asset.os_version = os_version
@@ -109,7 +107,7 @@ def discovery_scan():
                 except Exception as e:
                     # Optionally log or handle errors for individual asset scans
                     continue
-
+            
             scan_result = ScanResult(
                 scan_id=scan.id,
                 output=discovery_result,
