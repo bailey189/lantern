@@ -48,5 +48,23 @@ def create_app(config_object='config.Config'):
             routes.append(f"{rule.endpoint}: {rule.rule} [{methods}]")
         return "<br>".join(sorted(routes))
 
+    # --- CLI command to populate AssetTier table ---
+    @app.cli.command("populate-assettier")
+    def populate_assettier():
+        """Populate the AssetTier table with default records."""
+        from app.models import AssetTier
+        tiers = [
+            {"name": "Mission-Critical", "description": "Essential systems for business continuity (e.g., payroll, authentication servers)."},
+            {"name": "Business-Critical", "description": "Important systems supporting operations but not catastrophic if unavailable (e.g., CRM, inventory management)."},
+            {"name": "Operational Support", "description": "Devices that improve efficiency but do not directly impact core business functions (e.g., workstations, internal file servers)."},
+            {"name": "Non-Critical", "description": "Convenience-based or auxiliary systems with minimal impact (e.g., newsletter servers, guest Wi-Fi)."}
+        ]
+        from app import db
+        for tier in tiers:
+            if not AssetTier.query.filter_by(name=tier["name"]).first():
+                db.session.add(AssetTier(name=tier["name"], description=tier["description"]))
+        db.session.commit()
+        print("AssetTier table populated.")
+
     return app
 
