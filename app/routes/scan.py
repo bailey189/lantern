@@ -256,3 +256,40 @@ def arp_scan():
         error = f"Error running ARP scan: {e}"
 
     return render_template('scan.html', title="Lantern - Scan", arpscan_result=arpscan_result, error=error)
+
+@scan_bp.route('/portscan', methods=['POST'])
+def port_scan():
+    assets = Asset.query.all()
+    scan_results = []
+    for asset in assets:
+        ip = asset.ip_address
+        # Run nmap to scan top 1000 ports (or adjust as needed)
+        cmd = ["nmap", "-Pn", "--top-ports", "1000", "-oG", "-", ip]
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            output = proc.stdout
+            open_ports = []
+            for line in output.splitlines():
+                if line.startswith("Host:") and "Ports:" in line:
+                    ports_part = line.split("Ports:")[1]
+                    for portinfo in ports_part.split(","):
+                        portinfo = portinfo.strip()
+                        if "/open/" in portinfo:
+                            port_number, proto = portinfo.split("/")[0:2]
+                            open_ports.append((int(port_number), proto))
+            # Add ports to the database and associate with asset
+            for port_number, proto in open_ports:
+                port = Port.query.filter_by(port_number=port_number, protocol=proto).first()
+                if not port:
+                    port = Port(port_number=port_number, protocol=proto, state="open")
+                    db.session.add(port)
+                    db.session.flush()
+                if port not in asset.ports:
+                    asset.ports.append(port)
+            asset.last_scanned_date = datetime.utcnow()
+            db.session.commit()
+            scan_results.append({"ip": ip, "open_ports": open_ports})
+        except Exception as e:
+            scan_results.append({"ip": ip, "error": str(e)})
+
+    return render_template('scan.html', title="Lantern - Port Scan", portscan_result=scan_results)
