@@ -194,7 +194,7 @@ class Asset(db.Model): # Renamed from 'Device' to be more encompassing
     
     # Relationships
     credentials = db.relationship('Credential', back_populates='asset', cascade="all, delete-orphan")
-    ports = db.relationship('Port', secondary=asset_ports, back_populates='assets', cascade="all, delete-orphan")
+    ports = db.relationship('Port', secondary=asset_ports, back_populates='assets')
     routes = db.relationship('Route', back_populates='asset', cascade="all, delete-orphan")
     installed_applications = db.relationship('InstalledApplication', back_populates='asset', cascade="all, delete-orphan")
     security_controls = db.relationship('SecurityControl', back_populates='asset', cascade="all, delete-orphan")
