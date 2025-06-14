@@ -26,7 +26,7 @@
 
         <!-- Discovery Scan -->
         <div class="card my-4">
-            <div class="card-header">1) Discovery Scan (Nmap Ping Scan)</div>
+            <div class="card-header">1) Discovery Scan (Nmap Scan)</div>
             <div class="card-body">
                 <form method="POST" action="/scan/discovery">
                     <div class="mb-3">
@@ -40,7 +40,7 @@
 
         <!-- Port Scan -->
         <div class="card my-4">
-            <div class="card-header">2) Port Scan (Masscan)</div>
+            <div class="card-header">2) Ports and Services (Masscan)</div>
             <div class="card-body">
                 <form method="POST" action="/scan/port">
                     <div class="mb-3">
@@ -52,20 +52,6 @@
                         <input type="text" class="form-control" id="ports" name="ports" required>
                     </div>
                     <button type="submit" class="btn btn-secondary">Run Port Scan</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- ARP Scan -->
-        <div class="card my-4">
-            <div class="card-header">3) ARP Scan</div>
-            <div class="card-body">
-                <form method="POST" action="/scan/arp">
-                    <div class="mb-3">
-                        <label for="arp_interface" class="form-label">Interface (e.g., eth0)</label>
-                        <input type="text" class="form-control" id="arp_interface" name="interface" required>
-                    </div>
-                    <button type="submit" class="btn btn-success">Run ARP Scan</button>
                 </form>
             </div>
         </div>

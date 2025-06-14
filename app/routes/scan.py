@@ -85,7 +85,7 @@ def discovery_scan():
             for asset in unknown_assets:
                 try:
                     os_scan_cmd = [
-                        "sudo", "nmap", "-O", "-sV", "--script=mac-lookup", asset.ip_address
+                        "sudo", "nmap", "-O", "--traceroute",  asset.ip_address
                     ]
                     os_proc = subprocess.run(os_scan_cmd, capture_output=True, text=True, timeout=60)
                     os_output = os_proc.stdout
@@ -96,7 +96,7 @@ def discovery_scan():
 
                     for line in os_output.splitlines():
                         if line.strip().startswith("OS details:"):
-                            os_type = line.split(":", 1)[1].strip()
+                            os_version = line.split(":", 1)[1].strip()
                         elif line.strip().startswith("MAC Address:"):
                             mac_address = line.split(":", 1)[1].split()[0].strip()
                         elif "Running" in line:
