@@ -1,6 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import os
+
+from cryptography.fernet import Fernet
+os.environ["FERNET_KEY"] = Fernet.generate_key().decode()
+
 
 db = SQLAlchemy()
 migrate = Migrate()

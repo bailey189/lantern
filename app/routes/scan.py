@@ -70,6 +70,14 @@ def discovery_scan():
                                 is_active=True
                             )
                             db.session.add(asset)
+                            db.session.flush()  # Ensure asset.id is available
+
+                        # Add a credentials row for this asset if not already present
+                        from app.models import Credential
+                        cred_exists = Credential.query.filter_by(asset_id=asset.id).first()
+                        if not cred_exists:
+                            cred = Credential(asset_id=asset.id, username=None, password=None)
+                            db.session.add(cred)
             db.session.commit()
 
             # After discovery, run OS/service scan for assets with unknown OS

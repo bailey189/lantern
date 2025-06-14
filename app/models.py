@@ -3,6 +3,8 @@ from app import db
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import INET, MACADDR, UUID
 import uuid
+from cryptography.fernet import Fernet
+from flask import current_app
 
 # --- Lookup Tables (Normalized Data) ---
 # These tables store static, reusable data to avoid redundancy
@@ -197,13 +199,25 @@ class Asset(db.Model): # Renamed from 'Device' to be more encompassing
 
 class Credential(db.Model):
     __tablename__ = 'credentials'
-
     id = db.Column(db.Integer, primary_key=True)
-    asset_id = db.Column(UUID(as_uuid=True), db.ForeignKey('assets.id'), nullable=False) # Changed from device_id
-    username = db.Column(db.String(64), nullable=False)
-    # Password should be hashed and salted; for now, keeping as is for simplicity.
-    password = db.Column(db.String(128), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    asset_id = db.Column(UUID(as_uuid=True), db.ForeignKey('assets.id'), nullable=False)
+    username = db.Column(db.String(255))
+    _password = db.Column("password", db.LargeBinary)  # Store encrypted bytes
+
+    @property
+    def password(self):
+        if self._password is None:
+            return None
+        f = Fernet(current_app.config['FERNET_KEY'].encode())
+        return f.decrypt(self._password).decode()
+
+    @password.setter
+    def password(self, value):
+        if value is None:
+            self._password = None
+        else:
+            f = Fernet(current_app.config['FERNET_KEY'].encode())
+            self._password = f.encrypt(value.encode())
 
     asset = db.relationship('Asset', back_populates='credentials')
 
