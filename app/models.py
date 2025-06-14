@@ -6,6 +6,13 @@ import uuid
 from cryptography.fernet import Fernet
 from flask import current_app
 
+# Association table for Asset <-> Port many-to-many relationship
+asset_ports = db.Table(
+    'asset_ports',
+    db.Column('asset_id', UUID(as_uuid=True), db.ForeignKey('assets.id'), primary_key=True),
+    db.Column('port_id', db.Integer, db.ForeignKey('ports.id'), primary_key=True)
+)
+
 # --- Lookup Tables (Normalized Data) ---
 # These tables store static, reusable data to avoid redundancy
 # and maintain data integrity.
@@ -187,7 +194,7 @@ class Asset(db.Model): # Renamed from 'Device' to be more encompassing
     
     # Relationships
     credentials = db.relationship('Credential', back_populates='asset', cascade="all, delete-orphan")
-    ports = db.relationship('Port', back_populates='asset', cascade="all, delete-orphan")
+    ports = db.relationship('Port', secondary=asset_ports, back_populates='assets', cascade="all, delete-orphan")
     routes = db.relationship('Route', back_populates='asset', cascade="all, delete-orphan")
     installed_applications = db.relationship('InstalledApplication', back_populates='asset', cascade="all, delete-orphan")
     security_controls = db.relationship('SecurityControl', back_populates='asset', cascade="all, delete-orphan")
@@ -227,16 +234,16 @@ class Credential(db.Model):
 class Port(db.Model):
     __tablename__ = 'ports'
     id = db.Column(db.Integer, primary_key=True)
-    asset_id = db.Column(UUID(as_uuid=True), db.ForeignKey('assets.id'), nullable=False) # Changed from device_id
     port_number = db.Column(db.Integer, nullable=False)
     protocol = db.Column(db.String(10), nullable=False)
     service_name = db.Column(db.String(128))
     state = db.Column(db.String(64)) # open, closed, filtered, etc.
 
-    asset = db.relationship('Asset', back_populates='ports')
+    # Many-to-many relationship with Asset
+    assets = db.relationship('Asset', secondary=asset_ports, back_populates='ports')
 
     def __repr__(self):
-        return f"<Port {self.port_number}/{self.protocol} on {self.asset_id}>"
+        return f"<Port {self.port_number}/{self.protocol}>"
 
 class Route(db.Model):
     __tablename__ = 'routes'
