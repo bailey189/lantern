@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, jsonify
-from app.models import Asset, Credential, AssetTier, DataClassification
+from app.models import Asset, Credential, AssetTier, DataClassification, Port
 from app import db
 
 assets_bp = Blueprint('assets', __name__, url_prefix="/assets")
@@ -41,7 +41,7 @@ def asset_tier_info(asset_id):
 @assets_bp.route('/classification/<asset_id>')
 def asset_classification_info(asset_id):
     asset = Asset.query.filter_by(id=asset_id).first()
-    classification = asset.classification if asset and hasattr(asset, 'classification') else None
+    classification = asset.data_classification if asset and hasattr(asset, 'data_classification') else None
     return jsonify({
         "asset_name": asset.name if asset else "",
         "ip_address": asset.ip_address if asset else "",
@@ -67,16 +67,33 @@ def asset_credentials_info(asset_id):
             return jsonify({"message": "Credentials saved."})
         return jsonify({"message": "Asset not found."}), 404
 
-    # GET: return credentials
     credentials = []
     if asset and hasattr(asset, 'credentials'):
         for cred in asset.credentials:
             credentials.append({
                 "username": cred.username,
-                "password": "********"  # Never send real password
+                "password": "********"
             })
     return jsonify({
         "asset_name": asset.name if asset else "",
         "ip_address": asset.ip_address if asset else "",
         "credentials": credentials
+    })
+
+@assets_bp.route('/ports/<asset_id>')
+def asset_ports_info(asset_id):
+    asset = Asset.query.filter_by(id=asset_id).first()
+    ports = []
+    if asset and hasattr(asset, 'ports'):
+        for port in asset.ports:
+            ports.append({
+                "port_number": port.port_number,
+                "protocol": port.protocol,
+                "service_name": port.service_name,
+                "state": port.state
+            })
+    return jsonify({
+        "asset_name": asset.name if asset else "",
+        "ip_address": asset.ip_address if asset else "",
+        "ports": ports
     })
