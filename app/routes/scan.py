@@ -201,64 +201,6 @@ def erase_all():
 
 @scan_bp.route('/port', methods=['POST'])
 def port_scan():
-    subnet = request.form.get('subnet')
-    ports = request.form.get('ports')
-    portscan_result = None
-    error = None
-
-    if not subnet or not ports:
-        error = "Subnet and ports are required for port scan."
-    else:
-        scan = Scan(tool_name="masscan", target=subnet, started_at=datetime.utcnow())
-        db.session.add(scan)
-        db.session.commit()
-        try:
-            cmd = ["masscan", subnet, "-p", ports, "--rate", "1000"]
-            proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            portscan_result = proc.stdout
-            scan_result = ScanResult(
-                scan_id=scan.id,
-                output=portscan_result,
-                created_at=datetime.utcnow()
-            )
-            db.session.add(scan_result)
-            scan.finished_at = datetime.utcnow()
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            error = f"Error running masscan: {e}"
-
-    return render_template('scan.html', title="Lantern - Scan", portscan_result=portscan_result, error=error)
-
-@scan_bp.route('/arp', methods=['POST'])
-def arp_scan():
-    arpscan_result = None
-    error = None
-
-    scan = Scan(tool_name="arp-scan", target="local", started_at=datetime.utcnow())
-    db.session.add(scan)
-    db.session.commit()
-    try:
-        # Example command; adjust as needed for your environment
-        cmd = ["arp", "-a"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        arpscan_result = proc.stdout
-        scan_result = ScanResult(
-            scan_id=scan.id,
-            output=arpscan_result,
-            created_at=datetime.utcnow()
-        )
-        db.session.add(scan_result)
-        scan.finished_at = datetime.utcnow()
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        error = f"Error running ARP scan: {e}"
-
-    return render_template('scan.html', title="Lantern - Scan", arpscan_result=arpscan_result, error=error)
-
-@scan_bp.route('/portscan', methods=['POST'])
-def port_scan():
     assets = Asset.query.all()
     scan_results = []
     for asset in assets:
@@ -293,3 +235,31 @@ def port_scan():
             scan_results.append({"ip": ip, "error": str(e)})
 
     return render_template('scan.html', title="Lantern - Port Scan", portscan_result=scan_results)
+
+@scan_bp.route('/arp', methods=['POST'])
+def arp_scan():
+    arpscan_result = None
+    error = None
+
+    scan = Scan(tool_name="arp-scan", target="local", started_at=datetime.utcnow())
+    db.session.add(scan)
+    db.session.commit()
+    try:
+        # Example command; adjust as needed for your environment
+        cmd = ["arp", "-a"]
+        proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        arpscan_result = proc.stdout
+        scan_result = ScanResult(
+            scan_id=scan.id,
+            output=arpscan_result,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(scan_result)
+        scan.finished_at = datetime.utcnow()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        error = f"Error running ARP scan: {e}"
+
+    return render_template('scan.html', title="Lantern - Scan", arpscan_result=arpscan_result, error=error)
+
