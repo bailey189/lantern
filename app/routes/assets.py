@@ -49,15 +49,31 @@ def asset_classification_info(asset_id):
         "classification_description": classification.description if classification else ""
     })
 
-@assets_bp.route('/credentials/<asset_id>')
+@assets_bp.route('/credentials/<asset_id>', methods=['GET', 'POST'])
 def asset_credentials_info(asset_id):
     asset = Asset.query.filter_by(id=asset_id).first()
+    if request.method == 'POST':
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        if asset:
+            cred = Credential.query.filter_by(asset_id=asset.id).first()
+            if not cred:
+                cred = Credential(asset_id=asset.id)
+                db.session.add(cred)
+            cred.username = username
+            cred.password = password  # Will be encrypted by the model property
+            db.session.commit()
+            return jsonify({"message": "Credentials saved."})
+        return jsonify({"message": "Asset not found."}), 404
+
+    # GET: return credentials
     credentials = []
     if asset and hasattr(asset, 'credentials'):
         for cred in asset.credentials:
             credentials.append({
                 "username": cred.username,
-                "password": cred.password
+                "password": "********"  # Never send real password
             })
     return jsonify({
         "asset_name": asset.name if asset else "",

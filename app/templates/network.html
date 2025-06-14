@@ -171,7 +171,7 @@
         function showAssetClassificationInfo(assetId) {
             fetch(`/assets/classification/${assetId}`)
                 .then(response => response.json())
-                .then(data => {
+                .then (data => {
                     let tbody = document.getElementById('asset-classification-table-body');
                     tbody.innerHTML = `
                         <tr>
@@ -194,24 +194,53 @@
                 .then(data => {
                     let tbody = document.getElementById('asset-credentials-table-body');
                     tbody.innerHTML = "";
+                    // Show existing credentials if any
                     if (data.credentials && data.credentials.length > 0) {
                         data.credentials.forEach(cred => {
                             tbody.innerHTML += `
                                 <tr>
                                     <td>${data.asset_name}</td>
                                     <td>${data.ip_address}</td>
-                                    <td>${cred.username}</td>
-                                    <td>${cred.password}</td>
+                                    <td>${cred.username || ""}</td>
+                                    <td>********</td>
                                 </tr>
                             `;
                         });
-                    } else {
-                        tbody.innerHTML = `<tr><td colspan="4">No credentials found.</td></tr>`;
                     }
+                    // Add form row for new credentials
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${data.asset_name}</td>
+                            <td>${data.ip_address}</td>
+                            <td><input type="text" id="cred-username" class="form-control" placeholder="Username"></td>
+                            <td>
+                                <input type="password" id="cred-password" class="form-control" placeholder="Password">
+                            </td>
+                            <td>
+                                <button class="btn btn-success btn-sm" onclick="saveAssetCredentials('${assetId}')">Save</button>
+                            </td>
+                        </tr>
+                    `;
                     document.getElementById('asset-tier-info').style.display = 'none';
                     document.getElementById('asset-classification-info').style.display = 'none';
                     document.getElementById('asset-credentials-info').style.display = '';
                 });
+        }
+
+        // Save credentials via AJAX POST
+        function saveAssetCredentials(assetId) {
+            const username = document.getElementById('cred-username').value;
+            const password = document.getElementById('cred-password').value;
+            fetch(`/assets/credentials/${assetId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || "Credentials saved.");
+                showAssetCredentialsInfo(assetId); // Refresh table
+            });
         }
     </script>
 </body>
