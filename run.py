@@ -3,6 +3,7 @@ import os
 from getpass import getpass
 from flask import Flask
 from dotenv import load_dotenv
+from cryptography.fernet import Fernet
 
 # Load environment variables from .env file
 load_dotenv()
