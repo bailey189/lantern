@@ -18,3 +18,4 @@ class ProductionConfig(Config):
     DEBUG = False
 
 FERNET_KEY = os.environ.get("FERNET_KEY")
+
