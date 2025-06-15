@@ -5,6 +5,8 @@ from flask import Flask
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 
+VALID_LICENSE_HASH = "54fa7e778bd1c624aa2ac67785f6c798"
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -22,6 +24,9 @@ from app import create_app
 # Ensure the config object is passed to create_app
 app = create_app('config.Config')
 
+# Define the valid license hash (replace with your actual hash)
+
+
 def validate_license():
     print("🔐 Lantern License Verification")
     license_key = getpass("Enter your license key: ")
@@ -34,8 +39,7 @@ def validate_license():
         print("❌ Invalid license key. Access denied.")
         return False
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     if validate_license():
         app = create_app()
         app.run(host='0.0.0.0', port=5000)
