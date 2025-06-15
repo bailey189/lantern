@@ -1,5 +1,6 @@
 # config.py
 import os
+FERNET_KEY = os.environ.get("FERNET_KEY")
 
 class Config:
     # General Config
@@ -17,5 +18,4 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
 
-FERNET_KEY = os.environ.get("FERNET_KEY")
 
