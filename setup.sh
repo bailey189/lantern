@@ -66,8 +66,8 @@ if [ -f requirements.txt ]; then
     pip install -r requirements.txt
 fi
 
-echo "Installing PostgreSQL Python driver, netifaces, and cryptography..."
-pip install psycopg2-binary netifaces cryptography
+echo "Installing PostgreSQL Python driver, netifaces, cryptography, and python-dotenv..."
+pip install psycopg2-binary netifaces cryptography python-dotenv
 
 echo "Running database migrations..."
 flask db upgrade
