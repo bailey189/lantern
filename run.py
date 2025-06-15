@@ -17,7 +17,7 @@ if not os.environ.get("FERNET_KEY"):
     fernet = Fernet(key)
     print("🔑 FERNET_KEY generated and saved to .env file.")
     with open("license.txt", "a") as file:
-        file.write("This is your FERNET_KEY={key}.\n")
+        file.write('This is your FERNET_KEY={key}.\n')
 
 # Expected MD5 hash of the correct license key
 VALID_LICENSE_HASH = "54fa7e778bd1c624aa2ac67785f6c798"
