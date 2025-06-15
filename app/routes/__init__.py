@@ -9,8 +9,7 @@ def create_app(config_object='config.Config'):
     app = Flask(__name__)
     
     # Load configuration from the config object
-    app.config.from_object(config_object)
-
+    app.config.from_object('FERNET_KEY')
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
