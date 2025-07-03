@@ -1,3 +1,4 @@
+import subprocess
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 main_bp = Blueprint('main', __name__)
@@ -29,3 +30,12 @@ def wipe_system():
     # Placeholder for wipe logic
     flash("System wipe started (not implemented).")
     return redirect(url_for('main.index'))
+
+@main_bp.route('/run_update', methods=['POST'])
+def run_update():
+    try:
+        subprocess.Popen(['bash', 'update_lantern.sh'])
+        flash("Lantern update script started. The page will refresh in 30 seconds.", "success")
+    except Exception as e:
+        flash(f"Update failed: {e}", "danger")
+    return render_template('update_wait.html')
