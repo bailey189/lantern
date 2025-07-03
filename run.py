@@ -42,4 +42,4 @@ def validate_license():
 if __name__ == '__main__':
     if validate_license():
         app = create_app()
-        app.run(host='0.0.0.0', port=5000)
+        app.run(host='0.0.0.0', port=80)
