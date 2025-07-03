@@ -157,13 +157,9 @@
 
         <div class="menu">
             <a href="{{ url_for('index_bp.index') }}">Welcome to Lantern</a>
-            <a href="{{ url_for('scan.scan') }}">Scan</a>
-            <a href="{{ url_for('network_bp.network') }}">Network</a>
-            <a href="{{ url_for('assets.assets') }}">Assets</a>
-            <a href="{{ url_for('results.results') }}">Results</a>
-            <a href="{{ url_for('settings.settings') }}">Settings</a>
+
             <a href="{{ url_for('about.about') }}">About</a>
-        </div>
+
 
         <form method="post" action="{{ url_for('main.survey') }}">
             <button type="submit" class="btn btn-primary btn-lg">
@@ -180,7 +176,7 @@
                 Wipe System
             </button>
         </form>
-
+        </div>
         <div class="footer">
             <p>&copy; 2025 Lantern Security. All rights reserved.</p>
         </div>
