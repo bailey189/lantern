@@ -38,4 +38,5 @@ def validate_license():
 
 if __name__ == "__main__":
     if validate_license():
+        print("Starting Lantern application...")
     app.run()
