@@ -21,7 +21,6 @@ if not os.environ.get("FERNET_KEY"):
 
 from app import create_app
 
-# Ensure the config object is passed to create_app
 app = create_app('config.Config')
 
 
@@ -37,7 +36,6 @@ def validate_license():
         print("❌ Invalid license key. Access denied. Overide...")
         return True
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if validate_license():
-        app = create_app()
-        app.run(host='0.0.0.0', port=80)
+    app.run()
