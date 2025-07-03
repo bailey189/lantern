@@ -24,8 +24,6 @@ from app import create_app
 # Ensure the config object is passed to create_app
 app = create_app('config.Config')
 
-# Define the valid license hash (replace with your actual hash)
-
 
 def validate_license():
     print("🔐 Lantern License Verification")

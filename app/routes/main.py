@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 main_bp = Blueprint('main', __name__)
 
@@ -9,11 +9,14 @@ def index():
     survey_button_text = "Initial Survey"
     return render_template('index.html', survey_button_text=survey_button_text)
 
-@main_bp.route('/survey', methods=['POST'])
+@main_bp.route('/survey', methods=['GET', 'POST'])
 def survey():
-    # Placeholder for survey logic
-    flash("Survey started (not implemented).")
-    return redirect(url_for('main.index'))
+    if request.method == 'POST':
+        # Here you can process and store the survey data as needed
+        # For now, just flash a message and redirect
+        flash("Thank you for submitting the survey!", "success")
+        return redirect(url_for('main.index'))
+    return render_template('survey.html')
 
 @main_bp.route('/generate_report', methods=['POST'])
 def generate_report():
