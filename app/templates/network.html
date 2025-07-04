@@ -1,118 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Network Topology - Lantern</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Vis.js CDN (network only, lightweight) -->
-    <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
-    <link href="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.css" rel="stylesheet" />
-    <style>
-        #network {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #ddd;
-            background: #fafbfc;
-        }
-    </style>
-</head>
-<body>
-    {% include 'navbar.html' %}
-    <div class="container mt-4">
-        <h2>Network Topology</h2>
-        <div id="network"></div>
-        <div id="asset-info-panel" class="mt-4" style="display:none; max-width:600px;">
-            <h4>Asset Information</h4>
-            <form id="asset-info-form">
-                <table class="table table-bordered align-middle">
-                    <tbody id="asset-info-table">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
+{% extends 'base.html' %}
+
+{% block title %}Lantern - Network{% endblock %}
+
+{% block header_subtitle %}
+Network Topology
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">Network Topology</h2>
+    <div id="network" style="width: 100%; height: 600px; border: 1px solid #ddd; background: #fafbfc;"></div>
+    <div id="asset-info-panel" class="mt-4" style="display:none; max-width:600px;">
+        <h4>Asset Information</h4>
+        <form id="asset-info-form" autocomplete="off">
+            <table class="table table-bordered align-middle">
+                <tbody id="asset-info-table">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+            <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-success">Save</button>
                 <button type="button" class="btn btn-secondary" onclick="hideAssetInfo()">Cancel</button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-    <script>
-        let network, selectedAssetId = null, assetData = {};
+</div>
 
-        // Fetch network data from Flask endpoint
-        fetch('/network/data')
-            .then(response => response.json())
-            .then(data => {
-                // Store asset info for later lookup
-                data.nodes.forEach(node => {
-                    assetData[node.id] = node;
-                });
+<link href="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.css" rel="stylesheet" />
+<script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+<script>
+    let network, selectedAssetId = null, assetData = {};
 
-                // Create a vis.js network
-                var container = document.getElementById('network');
-                var nodes = new vis.DataSet(data.nodes);
-                var edges = new vis.DataSet(data.edges);
-                var networkData = { nodes: nodes, edges: edges };
-                var options = {
-                    nodes: {
-                        shape: 'dot',
-                        size: 18,
-                        font: { size: 16 }
-                    },
-                    edges: {
-                        arrows: 'to',
-                        font: { align: 'middle' }
-                    },
-                    physics: {
-                        stabilization: false,
-                        barnesHut: { gravitationalConstant: -30000 }
-                    }
-                };
-                network = new vis.Network(container, networkData, options);
-
-                // Node selection event
-                network.on("selectNode", function(params) {
-                    if (params.nodes.length > 0) {
-                        selectedAssetId = params.nodes[0];
-                        showAssetInfo(selectedAssetId);
-                    }
-                });
+    // Fetch network data and initialize the network graph
+    fetch('/network/data')
+        .then(response => response.json())
+        .then(data => {
+            data.nodes.forEach(node => {
+                assetData[node.id] = node;
             });
 
-        // Show asset info panel for selected asset
-        function showAssetInfo(assetId) {
-            fetch(`/assets/info/${assetId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let tbody = document.getElementById('asset-info-table');
-                    tbody.innerHTML = '';
-                    for (const [field, value] of Object.entries(data)) {
-                        // Don't allow editing of id
-                        if (field === "id") {
-                            tbody.innerHTML += `
-                                <tr>
-                                    <th style="width:40%">${field}</th>
-                                    <td><input type="text" class="form-control" name="${field}" value="${value}" readonly></td>
-                                </tr>
-                            `;
-                        } else {
-                            tbody.innerHTML += `
-                                <tr>
-                                    <th style="width:40%">${field}</th>
-                                    <td><input type="text" class="form-control" name="${field}" value="${value ?? ''}"></td>
-                                </tr>
-                            `;
-                        }
+            const container = document.getElementById('network');
+            const nodes = new vis.DataSet(data.nodes);
+            const edges = new vis.DataSet(data.edges);
+            const networkData = { nodes: nodes, edges: edges };
+            const options = {
+                nodes: {
+                    shape: 'dot',
+                    size: 18,
+                    font: { size: 16 }
+                },
+                edges: {
+                    arrows: 'to',
+                    font: { align: 'middle' }
+                },
+                physics: {
+                    stabilization: false,
+                    barnesHut: { gravitationalConstant: -30000 }
+                }
+            };
+            network = new vis.Network(container, networkData, options);
+
+            network.on("selectNode", function(params) {
+                if (params.nodes.length > 0) {
+                    selectedAssetId = params.nodes[0];
+                    showAssetInfo(selectedAssetId);
+                }
+            });
+        });
+
+    // Show asset info in editable table
+    function showAssetInfo(assetId) {
+        fetch(`/assets/info/${assetId}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('asset-info-table');
+                tbody.innerHTML = '';
+                for (const [field, value] of Object.entries(data)) {
+                    // Don't allow editing of id
+                    if (field === "id") {
+                        tbody.innerHTML += `
+                            <tr>
+                                <th style="width:40%">${field}</th>
+                                <td><input type="text" class="form-control" name="${field}" value="${value}" readonly></td>
+                            </tr>
+                        `;
+                    } else {
+                        tbody.innerHTML += `
+                            <tr>
+                                <th style="width:40%">${field}</th>
+                                <td><input type="text" class="form-control" name="${field}" value="${value !== null ? value : ''}"></td>
+                            </tr>
+                        `;
                     }
-                    document.getElementById('asset-info-panel').style.display = '';
-                });
-        }
+                }
+                document.getElementById('asset-info-panel').style.display = '';
+            });
+    }
 
-        // Hide asset info panel
-        function hideAssetInfo() {
-            document.getElementById('asset-info-panel').style.display = 'none';
-            selectedAssetId = null;
-        }
+    function hideAssetInfo() {
+        document.getElementById('asset-info-panel').style.display = 'none';
+        selectedAssetId = null;
+    }
 
-        // Form submission for asset info update
+    document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('asset-info-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const form = e.target;
@@ -136,6 +126,8 @@
                 }
             });
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}
+
+{% block footer %}{% endblock %}
