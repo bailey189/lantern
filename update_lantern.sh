@@ -51,7 +51,18 @@ chmod +x setup.sh
 
 echo ">>> Update complete!"
 
+
+# Kill any running run.py processes
+echo "Stopping existing run.py processes..."
+pkill -f "python.*run.py"
+
+# Wait a moment to ensure processes are stopped
+sleep 2
+
+# Start run.py in the background using the same Python interpreter as the venv
+echo "Starting run.py..."
 cd /home/pi/lantern
 source venv/bin/activate
-python3 run.py
+nohup python run.py > lantern.log 2>&1 &
 
+echo "run.py has been restarted."
