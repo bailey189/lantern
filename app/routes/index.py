@@ -13,7 +13,7 @@ def index():
     button_text = "Initial Survey"
     return render_template('index.html', action_button_text=button_text)
 
-@index_bp.route('/about')
+@index_bp.route('/about', methods=['GET'])
 def about():
     return render_template('about.html') 
 
@@ -22,7 +22,7 @@ def network():
     # Your logic here
     return render_template('network.html')
 
-@index_bp.route('/report', methods=['POST'])
+@index_bp.route('/report', methods=['POST', 'GET'])
 def generate_report():
     flash("Report generation started (not implemented).")
     return redirect(url_for('index_bp.index'))
