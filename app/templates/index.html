@@ -156,26 +156,26 @@
         <p>Discover security vulnerabilities and illuminate your network’s hidden risks.</p>
 
         <div class="menu">
+            <a href="{{ url_for('index_bp.index') }}">Home</a> 
+            <a href="{{ url_for('index_bp.index') }}">{{ action_button_text }}</a>
             <a href="{{ url_for('index_bp.index') }}">Welcome to Lantern</a>
-
-            <a href="{{ url_for('about.about') }}">About</a>
-
-
-        <form method="post" action="{{ url_for('main.survey') }}">
+            <a href="{{ url_for('index_bp.index') }}">Welcome to Lantern</a>
+        <form method="post" action="{{ url_for('index_bp.survey') }}">
             <button type="submit" class="btn btn-primary btn-lg">
-                {{ survey_button_text }}
+                {{ action_button_text }}
             </button>
         </form>
-        <form method="post" action="{{ url_for('main.generate_report') }}">
+        <form method="post" action="{{ url_for('index_bp.generate_report') }}">
             <button type="submit" class="btn btn-secondary btn-lg">
                 Generate Report
             </button>
         </form>
-        <form method="post" action="{{ url_for('main.wipe_system') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
+        <form method="post" action="{{ url_for('index_bp.wipe_system') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
             <button type="submit" class="btn btn-danger btn-lg">
                 Wipe System
             </button>
         </form>
+        <a href="{{ url_for('about.about') }}">About</a>
         </div>
         <div class="footer">
             <p>&copy; 2025 Lantern Security. All rights reserved.</p>
