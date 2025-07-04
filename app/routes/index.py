@@ -10,8 +10,8 @@ UPDATE_PROGRESS_FILE = "update_progress.txt"
 
 @index_bp.route('/', methods=['GET'])
 def index():
-    action_button_text = "Initial Survey"
-    return render_template('index.html', action_button_text=action_button_text)
+    button_text = "Initial Survey"
+    return render_template('index.html', action_button_text=button_text)
 
 @index_bp.route('/survey', methods=['GET', 'POST'])
 def survey():
