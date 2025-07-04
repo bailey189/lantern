@@ -21,79 +21,17 @@
     <div class="container mt-4">
         <h2>Network Topology</h2>
         <div id="network"></div>
-
-        <!-- Update Setting Controls -->
-        <div class="mt-4">
-            <label for="setting-select" class="form-label fw-bold">Update setting</label>
-            <div class="input-group mb-3" style="max-width:400px;">
-                <select class="form-select" id="setting-select">
-                    <option value="Tier">Tier</option>
-                    <option value="Classification">Classification</option>
-                    <option value="Credentials">Credentials</option>
-                    <option value="Ports">Ports</option>
-                </select>
-                <button class="btn btn-primary" id="go-btn" type="button">Go</button>
-            </div>
-        </div>
-
-        <!-- Asset Info Tables (hidden by default) -->
-        <div id="asset-tier-info" class="mt-4" style="display:none;">
-            <h5>Asset Tier Information</h5>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Asset Name</th>
-                        <th>IP Address</th>
-                        <th>Tier</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody id="asset-tier-table-body"></tbody>
-            </table>
-        </div>
-        <div id="asset-classification-info" class="mt-4" style="display:none;">
-            <h5>Asset Classification Information</h5>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Asset Name</th>
-                        <th>IP Address</th>
-                        <th>Classification</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody id="asset-classification-table-body"></tbody>
-            </table>
-        </div>
-        <div id="asset-credentials-info" class="mt-4" style="display:none;">
-            <h5>Asset Credentials</h5>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Asset Name</th>
-                        <th>IP Address</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                    </tr>
-                </thead>
-                <tbody id="asset-credentials-table-body"></tbody>
-            </table>
-        </div>
-        <div id="asset-ports-info" class="mt-4" style="display:none;">
-            <h5>Asset Ports</h5>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Asset Name</th>
-                        <th>IP Address</th>
-                        <th>Port Number</th>
-                        <th>Protocol</th>
-                        <th>Service Name</th>
-                        <th>State</th>
-                    </tr>
-                </thead>
-                <tbody id="asset-ports-table-body"></tbody>
-            </table>
+        <div id="asset-info-panel" class="mt-4" style="display:none; max-width:600px;">
+            <h4>Asset Information</h4>
+            <form id="asset-info-form">
+                <table class="table table-bordered align-middle">
+                    <tbody id="asset-info-table">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-secondary" onclick="hideAssetInfo()">Cancel</button>
+            </form>
         </div>
     </div>
     <script>
@@ -132,169 +70,72 @@
 
                 // Node selection event
                 network.on("selectNode", function(params) {
-                    let setting = document.getElementById('setting-select').value;
                     if (params.nodes.length > 0) {
                         selectedAssetId = params.nodes[0];
-                        if (setting === "Tier") {
-                            showAssetTierInfo(selectedAssetId);
-                        } else if (setting === "Classification") {
-                            showAssetClassificationInfo(selectedAssetId);
-                        } else if (setting === "Credentials") {
-                            showAssetCredentialsInfo(selectedAssetId);
-                        } else if (setting === "Ports") {
-                            showAssetPortsInfo(selectedAssetId);
-                        }
+                        showAssetInfo(selectedAssetId);
                     }
                 });
             });
 
-        // Go button logic
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('go-btn').addEventListener('click', function() {
-                let setting = document.getElementById('setting-select').value;
-                selectedAssetId = null;
-                document.getElementById('asset-tier-info').style.display = 'none';
-                document.getElementById('asset-classification-info').style.display = 'none';
-                document.getElementById('asset-credentials-info').style.display = 'none';
-                document.getElementById('asset-ports-info').style.display = 'none';
-                if (setting === "Tier") {
-                    alert("Select an asset node on the map to view its tier.");
-                } else if (setting === "Classification") {
-                    alert("Select an asset node on the map to view its classification.");
-                } else if (setting === "Credentials") {
-                    alert("Select an asset node on the map to view its credentials.");
-                } else if (setting === "Ports") {
-                    alert("Select an asset node on the map to view its ports.");
+        // Show asset info panel for selected asset
+        function showAssetInfo(assetId) {
+            fetch(`/assets/info/${assetId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tbody = document.getElementById('asset-info-table');
+                    tbody.innerHTML = '';
+                    for (const [field, value] of Object.entries(data)) {
+                        // Don't allow editing of id
+                        if (field === "id") {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <th style="width:40%">${field}</th>
+                                    <td><input type="text" class="form-control" name="${field}" value="${value}" readonly></td>
+                                </tr>
+                            `;
+                        } else {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <th style="width:40%">${field}</th>
+                                    <td><input type="text" class="form-control" name="${field}" value="${value ?? ''}"></td>
+                                </tr>
+                            `;
+                        }
+                    }
+                    document.getElementById('asset-info-panel').style.display = '';
+                });
+        }
+
+        // Hide asset info panel
+        function hideAssetInfo() {
+            document.getElementById('asset-info-panel').style.display = 'none';
+            selectedAssetId = null;
+        }
+
+        // Form submission for asset info update
+        document.getElementById('asset-info-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = {};
+            for (const [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            fetch(`/assets/update/${data.id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(resp => {
+                if (resp.success) {
+                    alert("Asset updated successfully!");
+                    hideAssetInfo();
+                } else {
+                    alert("Update failed: " + (resp.error || "Unknown error"));
                 }
             });
         });
-
-        // Show asset tier info table for selected asset
-        function showAssetTierInfo(assetId) {
-            fetch(`/assets/tier/${assetId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let tbody = document.getElementById('asset-tier-table-body');
-                    tbody.innerHTML = `
-                        <tr>
-                            <td>${data.asset_name}</td>
-                            <td>${data.ip_address}</td>
-                            <td>${data.tier_name || "Not Set"}</td>
-                            <td>${data.tier_description || ""}</td>
-                        </tr>
-                    `;
-                    document.getElementById('asset-tier-info').style.display = '';
-                    document.getElementById('asset-classification-info').style.display = 'none';
-                    document.getElementById('asset-credentials-info').style.display = 'none';
-                    document.getElementById('asset-ports-info').style.display = 'none';
-                });
-        }
-
-        // Show asset classification info table for selected asset
-        function showAssetClassificationInfo(assetId) {
-            fetch(`/assets/classification/${assetId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let tbody = document.getElementById('asset-classification-table-body');
-                    tbody.innerHTML = `
-                        <tr>
-                            <td>${data.asset_name}</td>
-                            <td>${data.ip_address}</td>
-                            <td>${data.classification_name || "Not Set"}</td>
-                            <td>${data.classification_description || ""}</td>
-                        </tr>
-                    `;
-                    document.getElementById('asset-tier-info').style.display = 'none';
-                    document.getElementById('asset-classification-info').style.display = '';
-                    document.getElementById('asset-credentials-info').style.display = 'none';
-                    document.getElementById('asset-ports-info').style.display = 'none';
-                });
-        }
-
-        // Show asset credentials info table for selected asset
-        function showAssetCredentialsInfo(assetId) {
-            fetch(`/assets/credentials/${assetId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let tbody = document.getElementById('asset-credentials-table-body');
-                    tbody.innerHTML = "";
-                    if (data.credentials && data.credentials.length > 0) {
-                        data.credentials.forEach(cred => {
-                            tbody.innerHTML += `
-                                <tr>
-                                    <td>${data.asset_name}</td>
-                                    <td>${data.ip_address}</td>
-                                    <td>${cred.username || ""}</td>
-                                    <td>********</td>
-                                </tr>
-                            `;
-                        });
-                    }
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${data.asset_name}</td>
-                            <td>${data.ip_address}</td>
-                            <td><input type="text" id="cred-username" class="form-control" placeholder="Username"></td>
-                            <td>
-                                <input type="password" id="cred-password" class="form-control" placeholder="Password">
-                            </td>
-                            <td>
-                                <button class="btn btn-success btn-sm" onclick="saveAssetCredentials('${assetId}')">Save</button>
-                            </td>
-                        </tr>
-                    `;
-                    document.getElementById('asset-tier-info').style.display = 'none';
-                    document.getElementById('asset-classification-info').style.display = 'none';
-                    document.getElementById('asset-credentials-info').style.display = '';
-                    document.getElementById('asset-ports-info').style.display = 'none';
-                });
-        }
-
-        // Save credentials via AJAX POST
-        function saveAssetCredentials(assetId) {
-            const username = document.getElementById('cred-username').value;
-            const password = document.getElementById('cred-password').value;
-            fetch(`/assets/credentials/${assetId}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message || "Credentials saved.");
-                showAssetCredentialsInfo(assetId); // Refresh table
-            });
-        }
-
-        // Show asset ports info table for selected asset
-        function showAssetPortsInfo(assetId) {
-            fetch(`/assets/ports/${assetId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let tbody = document.getElementById('asset-ports-table-body');
-                    tbody.innerHTML = "";
-                    if (data.ports && data.ports.length > 0) {
-                        data.ports.forEach(port => {
-                            tbody.innerHTML += `
-                                <tr>
-                                    <td>${data.asset_name}</td>
-                                    <td>${data.ip_address}</td>
-                                    <td>${port.port_number}</td>
-                                    <td>${port.protocol}</td>
-                                    <td>${port.service_name || ""}</td>
-                                    <td>${port.state || ""}</td>
-                                </tr>
-                            `;
-                        });
-                    } else {
-                        tbody.innerHTML = `<tr><td colspan="6">No ports found.</td></tr>`;
-                    }
-                    document.getElementById('asset-tier-info').style.display = 'none';
-                    document.getElementById('asset-classification-info').style.display = 'none';
-                    document.getElementById('asset-credentials-info').style.display = 'none';
-                    document.getElementById('asset-ports-info').style.display = '';
-                });
-        }
     </script>
 </body>
 </html>
