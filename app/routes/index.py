@@ -14,9 +14,16 @@ def index():
     button_text = "Initial Survey"
     return render_template('index.html', action_button_text=button_text)
 
-@index_bp.route('/about', methods=['GET'])
+@index_bp.route('/about')
 def about():
-    return render_template('about.html') 
+    debug_log = None
+    if current_app.logger.level == 10:  # logging.DEBUG == 10
+        try:
+            with open('lantern_debug.log', 'r') as f:
+                debug_log = f.read()[-10000:]  # Show last 10,000 chars
+        except Exception:
+            debug_log = "Debug log file not found."
+    return render_template('about.html', debug_log=debug_log)
 
 @index_bp.route('/network', methods=['POST', 'GET'])
 def network():

@@ -1,9 +1,13 @@
 <!-- templates/about.html -->
 {% extends 'base.html' %}
 
+{% block title %}About Lantern{% endblock %}
+
+{% block header_subtitle %}
+About
+{% endblock %}
+
 {% block content %}
-  <h2>About Lantern</h2>
-  
   <div style="margin-top: 2rem; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left;">
     <p>Lantern is a lightweight, Raspberry Pi-powered cybersecurity toolkit designed to help small businesses, hobbyists, and professionals illuminate risks in their networks.</p>
 
@@ -17,7 +21,14 @@
       <li>Device database with editable details</li>
       <li>Risk-level tagging and web vulnerability tracking</li>
     </ul>
-
+    <hr>
+    <h4>Debug Log</h4>
+    {% if debug_log %}
+        <pre style="background:#222;color:#bfc9d1;padding:1em;border-radius:6px;max-height:400px;overflow:auto;">{{ debug_log }}</pre>
+    {% else %}
+        <div class="alert alert-info">Debug log is not available or debug mode is off.</div>
+    {% endif %}
+    
     <p style="margin-top: 2rem; font-style: italic;">Lantern is licensed and developed by cybersecurity professionals committed to the empowerment of small businesses.</p>
   </div>
 {% endblock %}
