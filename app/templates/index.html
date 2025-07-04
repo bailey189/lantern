@@ -176,6 +176,11 @@
                     Generate Report
                 </button>
             </form>
+            <form method="post" action="{{ url_for('index_bp.run_update') }}">
+                <button type="submit" class="btn btn-secondary btn-lg">
+                    Update System
+                </button>
+            </form>
             <form method="post" action="{{ url_for('index_bp.wipe_system') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
                 <button type="submit" class="btn btn-danger btn-lg">
                     Wipe System

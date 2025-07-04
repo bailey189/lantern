@@ -23,6 +23,7 @@ def create_app(config_object='config.Config'):
     from app.routes.network import network_bp
     from app.routes.report import report_bp
     from app.routes.results import results_bp
+    from app.routes.run_update import run_update
     from app.routes.scan import scan_bp
     from app.routes.settings import settings_bp
     from app.routes.survey import survey_bp
@@ -35,6 +36,7 @@ def create_app(config_object='config.Config'):
     app.register_blueprint(network_bp)
     app.register_blueprint(report_bp)
     app.register_blueprint(results_bp)
+    app.register_blueprint(run_update)
     app.register_blueprint(scan_bp)  
     app.register_blueprint(settings_bp)
     app.register_blueprint(survey_bp)
