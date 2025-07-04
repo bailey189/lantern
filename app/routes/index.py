@@ -54,9 +54,6 @@ def run_update():
 
 @index_bp.route('/survey', methods=['GET', 'POST'])
 def survey():
-    if request.method == 'POST':
-        flash("Thank you for submitting the survey!", "success")
-        return redirect(url_for('index_bp.index'))
     return render_template('survey.html')
 
 @index_bp.route('/update_progress')
