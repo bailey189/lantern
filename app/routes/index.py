@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 import subprocess
 import os
+import sys
 
 # Your blueprint is named 'index_bp'
 index_bp = Blueprint('index_bp', __name__) # IMPORTANT: Ensure this is 'index_bp' if you also had 'index' previously
@@ -63,5 +64,11 @@ def update_progress():
 
 @index_bp.route('/wipe_system', methods=['POST'])
 def wipe_system():
-    flash("System wipe started (not implemented).")
+    try:
+        # Run the Database_reset.py script located in /standalone
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'standalone', 'Database_reset.py')
+        subprocess.run([sys.executable, script_path], check=True)
+        flash("System wipe completed successfully.", "success")
+    except Exception as e:
+        flash(f"System wipe failed: {e}", "danger")
     return redirect(url_for('index_bp.index'))

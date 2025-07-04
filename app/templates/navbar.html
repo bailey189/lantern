@@ -1,40 +1,47 @@
 <!-- app/templates/navbar.html -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="menu d-flex flex-wrap gap-2 justify-content-center my-3">
-        <form method="get" action="{{ url_for('index_bp.index') }}">
-            <button type="submit" class="btn btn-secondary btn-lg">
-                Home
-            </button>
-        </form>
-        <form method="post" action="{{ url_for('index_bp.survey') }}">
-            <button type="submit" class="btn btn-primary btn-lg">
-                {{ action_button_text }}
-            </button>
-        </form>
-        <form method="get" action="{{ url_for('index_bp.network') }}">
-            <button type="submit" class="btn btn-secondary btn-lg">
-                View Network
-            </button>
-        </form>
-        <form method="get" action="{{ url_for('index_bp.report') }}">
-            <button type="submit" class="btn btn-secondary btn-lg">
-                Generate Report
-            </button>
-        </form>
-        <form method="post" action="{{ url_for('index_bp.run_update') }}">
-            <button type="submit" class="btn btn-secondary btn-lg">
-                Update System
-            </button>
-        </form>
-        <form method="post" action="{{ url_for('index_bp.wipe_system') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
-            <button type="submit" class="btn btn-danger btn-lg">
-                Wipe System
-            </button>
-        </form>
-        <form method="get" action="{{ url_for('index_bp.about') }}">
-            <button type="submit" class="btn btn-secondary btn-lg">
-                About
-            </button>
-        </form>
-    </div>
+<nav class="sidebar-nav">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link{% if request.endpoint == 'index_bp.index' %} active{% endif %}" href="{{ url_for('index_bp.index') }}">
+                <span class="sidebar-icon bi bi-house"></span> Home
+            </a>
+        </li>
+        <li class="nav-item">
+            <form method="post" action="{{ url_for('index_bp.survey') }}">
+                <button type="submit" class="nav-link btn btn-link w-100 text-start{% if request.endpoint == 'index_bp.survey' %} active{% endif %}">
+                    <span class="sidebar-icon bi bi-ui-checks"></span> {{ action_button_text }}
+                </button>
+            </form>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% if request.endpoint == 'index_bp.network' %} active{% endif %}" href="{{ url_for('index_bp.network') }}">
+                <span class="sidebar-icon bi bi-diagram-3"></span> View Network
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% if request.endpoint == 'index_bp.report' %} active{% endif %}" href="{{ url_for('index_bp.report') }}">
+                <span class="sidebar-icon bi bi-file-earmark-bar-graph"></span> Generate Report
+            </a>
+        </li>
+        <li class="nav-item">
+            <form method="post" action="{{ url_for('index_bp.run_update') }}">
+                <button type="submit" class="nav-link btn btn-link w-100 text-start">
+                    <span class="sidebar-icon bi bi-arrow-repeat"></span> Update System
+                </button>
+            </form>
+        </li>
+        <li class="nav-item">
+            <form method="post" action="{{ url_for('index_bp.wipe_system') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
+                <button type="submit" class="nav-link btn btn-link w-100 text-start text-danger">
+                    <span class="sidebar-icon bi bi-trash"></span> Wipe System
+                </button>
+            </form>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% if request.endpoint == 'index_bp.about' %} active{% endif %}" href="{{ url_for('index_bp.about') }}">
+                <span class="sidebar-icon bi bi-info-circle"></span> About
+            </a>
+        </li>
+    </ul>
 </nav>
+<!-- Add Bootstrap Icons CDN in base.html for icons to work -->
