@@ -166,7 +166,12 @@
                     {{ action_button_text }}
                 </button>
             </form>
-            <form method="post" action="{{ url_for('index_bp.generate_report') }}">
+            <form method="post" action="{{ url_for('index_bp.network') }}">
+                <button type="submit" class="btn btn-secondary btn-lg">
+                    View Network
+                </button>
+            </form>
+            <form method="post" action="{{ url_for('index_bp.report') }}">
                 <button type="submit" class="btn btn-secondary btn-lg">
                     Generate Report
                 </button>
@@ -176,7 +181,7 @@
                     Wipe System
                 </button>
             </form>
-            <form method="post" action="{{ url_for('index_bp.about') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
+            <form method="post" action="{{ url_for('index_bp.about') }}">
                 <button type="submit" class="btn btn-secondary btn-lg">
                     About
                 </button>
