@@ -55,3 +55,7 @@ def update_progress():
     else:
         progress = "No update in progress."
     return progress, 200, {'Content-Type': 'text/plain'}
+
+@index_bp.route('/about')
+def about():
+    return render_template('about.html')
