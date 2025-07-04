@@ -2,10 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
-
+import logging
+# Ensure the FERNET_KEY is set for encryption/decryption
 from cryptography.fernet import Fernet
 os.environ["FERNET_KEY"] = Fernet.generate_key().decode()
 
+logging.debug("System initiated: Lantern Application")
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -56,5 +58,19 @@ def create_app(config_object='config.Config'):
         db.session.commit()
         print("AssetTier table populated.")
 
+    # Set up debug logging
+    if app.debug or app.config.get("DEBUG"):
+        app.logger.setLevel(logging.DEBUG)
+    else:
+        app.logger.setLevel(logging.INFO)
+
+    # Optional: Add a file handler
+    file_handler = logging.FileHandler('lantern_debug.log')
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+    )
+    file_handler.setFormatter(formatter)
+    app.logger.addHandler(file_handler)
     return app
 
