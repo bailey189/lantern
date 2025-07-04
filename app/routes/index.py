@@ -4,7 +4,7 @@ import subprocess
 import os
 
 # Your blueprint is named 'index_bp'
-index_bp = Blueprint('main', __name__) # IMPORTANT: Ensure this is 'index_bp' if you also had 'index' previously
+index_bp = Blueprint('index_bp', __name__) # IMPORTANT: Ensure this is 'index_bp' if you also had 'index' previously
 
 UPDATE_PROGRESS_FILE = "update_progress.txt"
 
@@ -17,18 +17,18 @@ def index():
 def survey():
     if request.method == 'POST':
         flash("Thank you for submitting the survey!", "success")
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index_bp.index'))
     return render_template('survey.html')
 
 @index_bp.route('/generate_report', methods=['POST'])
 def generate_report():
     flash("Report generation started (not implemented).")
-    return redirect(url_for('main.index'))
+    return redirect(url_for('index_bp.index'))
 
 @index_bp.route('/wipe_system', methods=['POST'])
 def wipe_system():
     flash("System wipe started (not implemented).")
-    return redirect(url_for('main.index'))
+    return redirect(url_for('index_bp.index'))
 
 @index_bp.route('/run_update', methods=['POST'])
 def run_update():
