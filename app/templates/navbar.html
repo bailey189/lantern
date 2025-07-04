@@ -1,32 +1,40 @@
 <!-- app/templates/navbar.html -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <!-- Correctly reference the 'home' function within the 'index_bp' blueprint -->
-        <a class="navbar-brand" href="{{ url_for('index_bp.index') }}">Lantern</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{ url_for('scan.scan') }}">Scan</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('network_bp.network') }}">Network</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('assets.assets') }}">Assets</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('results.results') }}">Results</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('settings.settings') }}">Settings</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('about.about') }}">About</a>
-                </li>
-            </ul>
-        </div>
+    <div class="menu d-flex flex-wrap gap-2 justify-content-center my-3">
+        <form method="get" action="{{ url_for('index_bp.index') }}">
+            <button type="submit" class="btn btn-secondary btn-lg">
+                Home
+            </button>
+        </form>
+        <form method="post" action="{{ url_for('index_bp.survey') }}">
+            <button type="submit" class="btn btn-primary btn-lg">
+                {{ action_button_text }}
+            </button>
+        </form>
+        <form method="get" action="{{ url_for('index_bp.network') }}">
+            <button type="submit" class="btn btn-secondary btn-lg">
+                View Network
+            </button>
+        </form>
+        <form method="get" action="{{ url_for('index_bp.report') }}">
+            <button type="submit" class="btn btn-secondary btn-lg">
+                Generate Report
+            </button>
+        </form>
+        <form method="post" action="{{ url_for('index_bp.run_update') }}">
+            <button type="submit" class="btn btn-secondary btn-lg">
+                Update System
+            </button>
+        </form>
+        <form method="post" action="{{ url_for('index_bp.wipe_system') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
+            <button type="submit" class="btn btn-danger btn-lg">
+                Wipe System
+            </button>
+        </form>
+        <form method="get" action="{{ url_for('index_bp.about') }}">
+            <button type="submit" class="btn btn-secondary btn-lg">
+                About
+            </button>
+        </form>
     </div>
 </nav>
