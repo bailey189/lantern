@@ -4,6 +4,7 @@ FERNET_KEY = os.environ.get("FERNET_KEY")
 
 class Config:
     # General Config
+    DEBUG = True 
     SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-secret-key')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
