@@ -22,10 +22,10 @@ def network():
     # Your logic here
     return render_template('network.html')
 
-@index_bp.route('/report', methods=['POST', 'GET'])
-def generate_report():
-    flash("Report generation started (not implemented).")
-    return redirect(url_for('index_bp.index'))
+@index_bp.route('/report', methods=['GET', 'POST'])
+def report():
+    # Your report logic here
+    return render_template('report.html')
 
 @index_bp.route('/run_update', methods=['POST'])
 def run_update():
