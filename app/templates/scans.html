@@ -1,73 +1,70 @@
 <!-- templates/scan.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Scan - Lantern</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    {% include 'navbar.html' %}
+{% extends 'base.html' %}
 
-    <div class="container mt-4">
-        <h2>Scan Network</h2>
-        <p>Use the forms below to perform various network scans. Ensure you have the necessary permissions to scan the target networks.</p>
-            <!-- Erase All Data Button -->
-            <form method="POST" action="{{ url_for('scan.erase_all') }}" onsubmit="return confirm('Are you sure you want to erase all scan, asset, and port records? This cannot be undone.');">
-                <button type="submit" class="btn btn-danger mb-3">Erase All Records</button>
+{% block title %}Lantern - Scans{% endblock %}
+
+{% block header_subtitle %}
+Scans
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Scan Network</h2>
+    <p>Use the forms below to perform various network scans. Ensure you have the necessary permissions to scan the target networks.</p>
+        <!-- Erase All Data Button -->
+        <form method="POST" action="{{ url_for('scan.erase_all') }}" onsubmit="return confirm('Are you sure you want to erase all scan, asset, and port records? This cannot be undone.');">
+            <button type="submit" class="btn btn-danger mb-3">Erase All Records</button>
+        </form>
+        {% if erase_msg %}
+        <div class="alert alert-warning mt-3">{{ erase_msg }}</div>
+        {% endif %}
+        <!-- ...rest of your scan forms... -->
+    </div>
+
+
+    <!-- Discovery Scan -->
+    <div class="card my-4">
+        <div class="card-header">1) Discovery Scan</div>
+        <div class="card-body">
+            <form method="POST" action="/scan/discovery">
+                <div class="mb-3">
+                    <label for="nmap_subnet" class="form-label">Subnet Range (e.g., 192.168.1.0/24)</label>
+                    <input type="text" class="form-control" id="nmap_subnet" name="subnet" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Run Discovery Scan</button>
             </form>
-            {% if erase_msg %}
-            <div class="alert alert-warning mt-3">{{ erase_msg }}</div>
-            {% endif %}
-            <!-- ...rest of your scan forms... -->
         </div>
+    </div>
 
-
-        <!-- Discovery Scan -->
-        <div class="card my-4">
-            <div class="card-header">1) Discovery Scan (Nmap Scan)</div>
-            <div class="card-body">
-                <form method="POST" action="/scan/discovery">
-                    <div class="mb-3">
-                        <label for="nmap_subnet" class="form-label">Subnet Range (e.g., 192.168.1.0/24)</label>
-                        <input type="text" class="form-control" id="nmap_subnet" name="subnet" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Run Discovery Scan</button>
-                </form>
-            </div>
+    <!-- Port Scan -->
+    <div class="card my-4">
+        <div class="card-header">2) Services Identification</div>
+        <div class="card-body">
+            <form method="POST" action="/scan/port">
+                <div class="mb-3">
+                    <label for="masscan_subnet" class="form-label">Subnet Range</label>
+                    <input type="text" class="form-control" id="masscan_subnet" name="subnet" required>
+                </div>
+                <div class="mb-3">
+                    <label for="ports" class="form-label">Ports (e.g., 1-1000)</label>
+                    <input type="text" class="form-control" id="ports" name="ports" required>
+                </div>
+                <button type="submit" class="btn btn-secondary">Run Port Scan</button>
+            </form>
         </div>
+    </div>
 
-        <!-- Port Scan -->
-        <div class="card my-4">
-            <div class="card-header">2) Ports and Services (Masscan)</div>
-            <div class="card-body">
-                <form method="POST" action="/scan/port">
-                    <div class="mb-3">
-                        <label for="masscan_subnet" class="form-label">Subnet Range</label>
-                        <input type="text" class="form-control" id="masscan_subnet" name="subnet" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ports" class="form-label">Ports (e.g., 1-1000)</label>
-                        <input type="text" class="form-control" id="ports" name="ports" required>
-                    </div>
-                    <button type="submit" class="btn btn-secondary">Run Port Scan</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Web Services Scan -->
-        <div class="card my-4">
-            <div class="card-header">4) Web Services Scan (Nikto)</div>
-            <div class="card-body">
-                <form method="POST" action="/scan/nikto">
-                    <div class="mb-3">
-                        <label for="target_ip" class="form-label">Target IP</label>
-                        <input type="text" class="form-control" id="target_ip" name="ip" required>
-                    </div>
-                    <button type="submit" class="btn btn-warning">Run Web Services Scan</button>
-                </form>
-            </div>
+    <!-- Enumeration Scan -->
+    <div class="card my-4">
+        <div class="card-header">4) Enumeration</div>
+        <div class="card-body">
+            <form method="POST" action="/scan/enumeration">
+                <div class="mb-3">
+                    <label for="target_ip" class="form-label">Target IP</label>
+                    <input type="text" class="form-control" id="target_ip" name="ip" required>
+                </div>
+                <button type="submit" class="btn btn-warning">Run Enumeration Scan</button>
+            </form>
         </div>
     </div>
 
@@ -95,5 +92,5 @@
         });
 
     </script>
-</body>
-</html>
+</div>
+{% endblock %}
