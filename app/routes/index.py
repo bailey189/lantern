@@ -109,10 +109,14 @@ def update_progress():
 @index_bp.route('/wipe_system', methods=['POST'])
 def wipe_system():
     try:
-        # Run the Database_reset.py script located in /standalone
-        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'standalone', 'Database_reset.py')
-        subprocess.run([sys.executable, script_path], check=True)
-        flash("System wipe completed successfully.", "success")
+        # Delete all records from the tables
+        db.session.query(Port).delete()
+        db.session.query(ScanResult).delete()
+        db.session.query(Scan).delete()
+        db.session.query(Asset).delete()
+        db.session.commit()
+        flash("All system data has been wiped from Port, ScanResult, Scan, and Asset tables.", "success")
     except Exception as e:
+        db.session.rollback()
         flash(f"System wipe failed: {e}", "danger")
     return redirect(url_for('index_bp.index'))
