@@ -21,12 +21,12 @@ if not os.environ.get("FERNET_KEY"):
     print("✅ FERNET_KEY generated and added to .env. Please restart the application.")
     exit(1)
 
-from app import db
-db.create_all()
+from app import create_app, db
 
-from app import create_app
+app = create_app()
 
-app = create_app('config.Config')
+with app.app_context():
+    db.create_all()
 
 
 def validate_license():
@@ -44,4 +44,4 @@ def validate_license():
 if __name__ == "__main__":
    # if validate_license():
    #     print("Starting Lantern application...")
-   app.run(host='0.0.0.0', port=5000, debug=True) 
+   app.run(host='0.0.0.0', port=5000, debug=True)
