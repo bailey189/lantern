@@ -1,5 +1,6 @@
 # app/routes/index.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from app.models import SurveyResult
 import subprocess
 import os
 import sys
