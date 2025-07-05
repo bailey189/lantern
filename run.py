@@ -6,6 +6,7 @@ from flask import Flask
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 
+
 VALID_LICENSE_HASH = "54fa7e778bd1c624aa2ac67785f6c798"
 
 # Load environment variables from .env file
@@ -19,6 +20,9 @@ if not os.environ.get("FERNET_KEY"):
         f.write(f"\nFERNET_KEY={key}\n")
     print("✅ FERNET_KEY generated and added to .env. Please restart the application.")
     exit(1)
+
+from app import db
+db.create_all()
 
 from app import create_app
 
@@ -40,4 +44,4 @@ def validate_license():
 if __name__ == "__main__":
    # if validate_license():
    #     print("Starting Lantern application...")
-   app.run(host='0.0.0.0', port=5000)
+   app.run(host='0.0.0.0', port=5000, debug=True) 
