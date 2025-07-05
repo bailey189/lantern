@@ -72,12 +72,10 @@ def survey():
             pci=data.get('pci'),
             soc2=data.get('soc2'),
             iso=data.get('iso'),
-            other_standard=data.get('other_standard'),
             csf=data.get('csf'),
             nist_80053=data.get('nist_80053'),
             nist_800171=data.get('nist_800171'),
             cis=data.get('cis'),
-            other_framework=data.get('other_framework')
         )
         db.session.add(survey)
         db.session.commit()
