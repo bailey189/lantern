@@ -14,6 +14,11 @@
             </form>
         </li>
         <li class="nav-item">
+            <a class="nav-link{% if request.endpoint == 'index_bp.scans' %} active{% endif %}" href="{{ url_for('index_bp.scans') }}">
+                <span class="sidebar-icon bi bi-search"></span> Scans
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link{% if request.endpoint == 'index_bp.network' %} active{% endif %}" href="{{ url_for('index_bp.network') }}">
                 <span class="sidebar-icon bi bi-diagram-3"></span> View Network
             </a>
