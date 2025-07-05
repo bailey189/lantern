@@ -39,18 +39,21 @@ def report():
 
 @index_bp.route('/run_update', methods=['POST'])
 def run_update():
+    progress_file = "update_progress.txt"
     # Remove old progress file if it exists
-    if os.path.exists(UPDATE_PROGRESS_FILE):
-        os.remove(UPDATE_PROGRESS_FILE)
-    # Start the update script and redirect to wait page
-    with open(UPDATE_PROGRESS_FILE, "w") as f:
+    if os.path.exists(progress_file):
+        os.remove(progress_file)
+    with open(progress_file, "w") as f:
         f.write("Starting Lantern update...\n")
-    # Run the update script and redirect output to the progress file
-    subprocess.Popen(
-        ['bash', 'update_lantern.sh'],
-        stdout=open(UPDATE_PROGRESS_FILE, "a"),
-        stderr=subprocess.STDOUT
-    )
+    # Open the file in append mode for the subprocess
+    with open(progress_file, "a") as out:
+        # Use close_fds=True to avoid leaking file descriptors
+        subprocess.Popen(
+            ['bash', 'update_lantern.sh'],
+            stdout=out,
+            stderr=subprocess.STDOUT,
+            close_fds=True
+        )
     flash("Lantern update script started. The page will refresh in 30 seconds.", "success")
     return render_template('update_wait.html')
 
