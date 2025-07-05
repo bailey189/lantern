@@ -27,6 +27,10 @@ def about():
             debug_log = "Debug log file not found."
     return render_template('about.html', debug_log=debug_log)
 
+@index_bp.route('/license')
+def license():
+    return render_template('license.html')
+
 @index_bp.route('/network', methods=['POST', 'GET'])
 def network():
     # Your logic here
