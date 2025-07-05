@@ -25,7 +25,6 @@ def create_app(config_object='config.Config'):
     # Import and register blueprints
     from app.routes.index import index_bp 
     from app.routes.network import network_bp
-       from app.routes.network import network_bp
     from app.routes.scans import scans_bp
     app.register_blueprint(index_bp) 
     app.register_blueprint(network_bp)
