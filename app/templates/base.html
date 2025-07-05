@@ -102,11 +102,8 @@
         </div>
         <footer>
             &copy; {{ current_year if current_year else 2025 }} Lantern &mdash; All rights reserved.
-            <p class="mb-0">   
-                <a class="nav-link{% if request.endpoint == 'index_bp.license' %} active{% endif %}" href="{{ url_for('index_bp.license') }}">
-                    <span class="sidebar-icon bi bi-file-earmark-text"></span> License Terms
-                </a>
-            </p>
+            &nbsp;|&nbsp;
+            <a href="{{ url_for('index_bp.license') }}" target="_blank" style="color:#bfc9d1;text-decoration:underline;">License</a>
         </footer>
     </div>
 </body>
