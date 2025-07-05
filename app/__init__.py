@@ -24,9 +24,12 @@ def create_app(config_object='config.Config'):
 
     # Import and register blueprints
     from app.routes.index import index_bp 
-    
+    from app.routes.network import network_bp
+       from app.routes.network import network_bp
+    from app.routes.scans import scans_bp
     app.register_blueprint(index_bp) 
-
+    app.register_blueprint(network_bp)
+    app.register_blueprint(scans_bp)
     # Optional: example route to list all registered routes (debugging)
     @app.route('/routes')
     def list_routes():
