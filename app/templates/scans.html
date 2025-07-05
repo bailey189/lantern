@@ -11,16 +11,8 @@ Scans
 <div class="container mt-4">
     <h2>Scan Network</h2>
     <p>Use the forms below to perform various network scans. Ensure you have the necessary permissions to scan the target networks.</p>
-        <!-- Erase All Data Button -->
-        <form method="POST" action="{{ url_for('scan.erase_all') }}" onsubmit="return confirm('Are you sure you want to erase all scan, asset, and port records? This cannot be undone.');">
-            <button type="submit" class="btn btn-danger mb-3">Erase All Records</button>
-        </form>
-        {% if erase_msg %}
-        <div class="alert alert-warning mt-3">{{ erase_msg }}</div>
-        {% endif %}
-        <!-- ...rest of your scan forms... -->
-    </div>
-
+    <div class="alert alert-info" role="alert">
+        <strong>Note:</strong> Scanning can take some time. Please be patient and do not refresh the page while scans are in progress.
 
     <!-- Discovery Scan -->
     <div class="card my-4">
