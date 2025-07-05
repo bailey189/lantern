@@ -1,6 +1,8 @@
 # app/routes/network.py
 from flask import Blueprint, render_template, jsonify
 from app.models import Asset, Route
+import netifaces
+import ipaddress
 
 network_bp = Blueprint('network_bp', __name__, url_prefix='/network')
 
@@ -70,3 +72,16 @@ def network_data():
             })
 
     return jsonify({"nodes": nodes, "edges": edges})
+
+def get_host_network():
+    """Return the host's primary subnet in CIDR notation, e.g., '192.168.1.0/24'."""
+    try:
+        gws = netifaces.gateways()
+        default_iface = gws['default'][netifaces.AF_INET][1]
+        iface_info = netifaces.ifaddresses(default_iface)[netifaces.AF_INET][0]
+        ip = iface_info['addr']
+        netmask = iface_info['netmask']
+        network = ipaddress.IPv4Network(f"{ip}/{netmask}", strict=False)
+        return str(network)
+    except Exception as e:
+        return None

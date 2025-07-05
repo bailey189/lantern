@@ -13,6 +13,7 @@ Scans
     <p>Use the forms below to perform various network scans. Ensure you have the necessary permissions to scan the target networks.</p>
     <div class="alert alert-info" role="alert">
         <strong>Note:</strong> Scanning can take some time. Please be patient and do not refresh the page while scans are in progress.
+    </div>
 
     <!-- Discovery Scan -->
     <div class="card my-4">
@@ -57,6 +58,16 @@ Scans
                 </div>
                 <button type="submit" class="btn btn-warning">Run Enumeration Scan</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="card my-4">
+        <div class="card-header">Scan Results</div>
+        <div class="card-body">
+            <h5>Detected subnet:</h5>
+            <p><strong>{{ nmap_subnet or "Unavailable" }}</strong></p>
+            <!-- Add your scan results or tables here -->
         </div>
     </div>
 

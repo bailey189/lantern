@@ -5,6 +5,7 @@ from app import db
 import subprocess
 import os
 import sys
+from app.utils.network import get_host_network
 
 # Your blueprint is named 'index_bp'
 index_bp = Blueprint('index_bp', __name__) # IMPORTANT: Ensure this is 'index_bp' if you also had 'index' previously
@@ -63,7 +64,8 @@ def run_update():
 
 @index_bp.route('/scans')
 def scans():
-    return render_template('scans.html')
+    nmap_subnet = get_host_network()
+    return render_template('scans.html', nmap_subnet=nmap_subnet)
 
 @index_bp.route('/survey', methods=['GET', 'POST'])
 def survey():
