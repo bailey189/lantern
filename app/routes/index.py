@@ -54,6 +54,10 @@ def run_update():
     flash("Lantern update script started. The page will refresh in 30 seconds.", "success")
     return render_template('update_wait.html')
 
+@index_bp.route('/scans')
+def scans():
+    return render_template('scans.html')
+
 @index_bp.route('/survey', methods=['GET', 'POST'])
 def survey():
     if request.method == 'POST':
