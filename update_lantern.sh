@@ -65,4 +65,4 @@ cd /home/pi/lantern
 source venv/bin/activate
 python3 run.py 
 
-echo "run.py has been restarted."
+echo "run.py has been restarted." >lantern.log
