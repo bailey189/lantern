@@ -63,6 +63,6 @@ sleep 2
 echo "Starting run.py..."
 cd /home/pi/lantern
 source venv/bin/activate
-python3 run.py > lantern.log 2>&1 &
+python3 run.py > lantern.log 
 
 echo "run.py has been restarted."
