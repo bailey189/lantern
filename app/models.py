@@ -60,6 +60,27 @@ class NetworkSegment(db.Model):
     def __repr__(self):
         return f"<NetworkSegment {self.name}>"
 
+class SurveyResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    business_name = db.Column(db.String(128))
+    POC_name = db.Column(db.String(128))
+    POC_eMail = db.Column(db.String(128))
+    naics_code = db.Column(db.String(32))
+    glba = db.Column(db.String(8))
+    hipaa = db.Column(db.String(8))
+    coppa = db.Column(db.String(8))
+    fisma = db.Column(db.String(8))
+    cmmc = db.Column(db.String(8))
+    ferpa = db.Column(db.String(8))
+    state_privacy_laws = db.Column(db.String(8))
+    pci = db.Column(db.String(8))
+    soc2 = db.Column(db.String(8))
+    iso = db.Column(db.String(8))
+    csf = db.Column(db.String(8))
+    nist_80053 = db.Column(db.String(8))
+    nist_800171 = db.Column(db.String(8))
+    cis = db.Column(db.String(8))
+
 class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)

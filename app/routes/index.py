@@ -54,6 +54,33 @@ def run_update():
 
 @index_bp.route('/survey', methods=['GET', 'POST'])
 def survey():
+    if request.method == 'POST':
+        # Collect form data
+        data = request.form
+        survey = SurveyResult(
+            business_name=data.get('business_name'),
+            naics_code=data.get('naics_code'),
+            glba=data.get('glba'),
+            hipaa=data.get('hipaa'),
+            coppa=data.get('coppa'),
+            fisma=data.get('fisma'),
+            cmmc=data.get('cmmc'),
+            ferpa=data.get('ferpa'),
+            state_privacy_laws=data.get('state_privacy_laws'),
+            pci=data.get('pci'),
+            soc2=data.get('soc2'),
+            iso=data.get('iso'),
+            other_standard=data.get('other_standard'),
+            csf=data.get('csf'),
+            nist_80053=data.get('nist_80053'),
+            nist_800171=data.get('nist_800171'),
+            cis=data.get('cis'),
+            other_framework=data.get('other_framework')
+        )
+        db.session.add(survey)
+        db.session.commit()
+        flash("Thank you for submitting the survey!", "success")
+        return redirect(url_for('index_bp.index'))
     return render_template('survey.html')
 
 @index_bp.route('/update_progress')
