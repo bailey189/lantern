@@ -1,36 +1,44 @@
 <!-- templates/results.html -->
 {% extends 'base.html' %}
 
+{% block title %}Lantern - Network Report{% endblock %}
+
+{% block header_subtitle %}
+Network Security Report
+{% endblock %}
+
 {% block content %}
-  <h2>Scan Results</h2>
-  {% if results %}
-    <table style="width: 100%; margin-top: 2rem; border-collapse: collapse; background: #1e1e1e; color: #f5f5f5;">
-      <thead>
-        <tr>
-          <th style="border: 1px solid #444; padding: 10px;">Device</th>
-          <th style="border: 1px solid #444; padding: 10px;">Open Ports</th>
-          <th style="border: 1px solid #444; padding: 10px;">Services</th>
-          <th style="border: 1px solid #444; padding: 10px;">Vulnerabilities</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for result in results %}
-        <tr>
-          <td style="border: 1px solid #444; padding: 10px;">{{ result.device.hostname }}</td>
-          <td style="border: 1px solid #444; padding: 10px;">
-            {% for port in result.device.ports %}{{ port.port_number }}<br>{% endfor %}
-          </td>
-          <td style="border: 1px solid #444; padding: 10px;">
-            {% for port in result.device.ports %}{{ port.service }} {{ port.version }}<br>{% endfor %}
-          </td>
-          <td style="border: 1px solid #444; padding: 10px;">
-            {% for vuln in result.device.web_vulns %}{{ vuln.issue }}<br>{% endfor %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
+<div class="container-fluid">
+    <h2 class="mb-4">Network Topology</h2>
+    <!-- Network topology image or diagram -->
+    <div class="text-center mb-4">
+        <!-- Replace src with your generated topology image or a placeholder -->
+        <img src="{{ url_for('static', filename='network_topology.png') }}" alt="Network Topology" style="max-width: 100%; height: auto; border: 1px solid #ccc; background: #fafbfc;">
+    </div>
+
+    <h2 class="mb-3">Asset Summary</h2>
+    <table class="table table-bordered table-dark align-middle">
+        <thead>
+            <tr>
+                <th>Asset Name</th>
+                <th>IP Address</th>
+                <th>Number of Vulnerabilities</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.name }}</td>
+                <td>{{ asset.ip_address }}</td>
+                <td>{{ asset.vulnerabilities|length if asset.vulnerabilities else 0 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-  {% else %}
-    <p style="margin-top: 2rem;">No results found.</p>
-  {% endif %}
+
+    <h2 class="mb-3">Recommendations</h2>
+    <div style="min-height: 120px; border: 1px dashed #888; background: #222; color: #bfc9d1; padding: 1.5em; margin-bottom: 2em;">
+        <!-- You can fill this section with recommendations dynamically or leave it blank for now -->
+    </div>
+</div>
 {% endblock %}
