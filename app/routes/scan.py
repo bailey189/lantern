@@ -2,7 +2,13 @@
 from datetime import datetime
 from flask import Blueprint, request, jsonify, render_template
 from app import db
-from app.models import Scan, ScanResult, Asset, Port
+from app.models import (
+    MisconfigThreatIntel, RemediationAction, AssetPort, SurveyResult, Asset,
+    BusinessUnit, NetworkSegment, Team, RemediationFix, MisconfigurationRule,
+    CVE, ThreatIntelligenceCVE, ThreatIntelligence, InstalledApplication, Port,
+    Credential, RuleCVE, CWE, RuleCWE, ScanResult, Scan, Route,
+    SecurityControl, AssetMisconfiguration
+)
 import subprocess
 import xml.etree.ElementTree as ET
 import netifaces
@@ -189,30 +195,30 @@ def discovery_scan():
 def erase_all():
     try:
         # Delete from child tables first due to FK constraints
-        db.session.query(misconfig_threat_intel).delete()
-        db.session.query(remediation_actions).delete()
-        db.session.query(asset_ports).delete()
-        db.session.query(survey_result).delete()
-        db.session.query(assets).delete()
-        db.session.query(business_units).delete()
-        db.session.query(network_segments).delete()
-        db.session.query(teams).delete()
-        db.session.query(remediation_fixes).delete()
-        db.session.query(misconfiguration_rules).delete()
-        db.session.query(cves).delete()
-        db.session.query(threat_intelligence_cves).delete()
-        db.session.query(threat_intelligence).delete()
-        db.session.query(installed_applications).delete()
-        db.session.query(ports).delete()
-        db.session.query(credentials).delete()
-        db.session.query(rule_cves).delete()
-        db.session.query(cwes).delete()
-        db.session.query(rule_cwes).delete()
-        db.session.query(scan_results).delete()
-        db.session.query(scans).delete()
-        db.session.query(routes).delete()
-        db.session.query(security_controls).delete()
-        db.session.query(asset_misconfigurations).delete()
+        db.session.query(MisconfigThreatIntel).delete()
+        db.session.query(RemediationAction).delete()
+        db.session.query(AssetPort).delete()
+        db.session.query(SurveyResult).delete()
+        db.session.query(Asset).delete()
+        db.session.query(BusinessUnit).delete()
+        db.session.query(NetworkSegment).delete()
+        db.session.query(Team).delete()
+        db.session.query(RemediationFix).delete()
+        db.session.query(MisconfigurationRule).delete()
+        db.session.query(CVE).delete()
+        db.session.query(ThreatIntelligenceCVE).delete()
+        db.session.query(ThreatIntelligence).delete()
+        db.session.query(InstalledApplication).delete()
+        db.session.query(Port).delete()
+        db.session.query(Credential).delete()
+        db.session.query(RuleCVE).delete()
+        db.session.query(CWE).delete()
+        db.session.query(RuleCWE).delete()
+        db.session.query(ScanResult).delete()
+        db.session.query(Scan).delete()
+        db.session.query(Route).delete()
+        db.session.query(SecurityControl).delete()
+        db.session.query(AssetMisconfiguration).delete()
         db.session.commit()
         msg = "All scan, asset, and port records have been erased."
     except Exception as e:

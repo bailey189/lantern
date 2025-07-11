@@ -22,7 +22,7 @@ Scans
             <form method="POST" action="/scan/discovery">
                 <div class="mb-3">
                     <label for="nmap_subnet" class="form-label">Subnet Range (e.g., 192.168.1.0/24)</label>
-                    <input type="text" class="form-control" id="nmap_subnet" name="subnet" required>
+                    <input type="text" class="form-control" id="nmap_subnet" name="subnet" required value="{{ nmap_subnet or '' }}">
                 </div>
                 <button type="submit" class="btn btn-primary">Run Discovery Scan</button>
             </form>
@@ -36,7 +36,7 @@ Scans
             <form method="POST" action="/scan/port">
                 <div class="mb-3">
                     <label for="masscan_subnet" class="form-label">Subnet Range</label>
-                    <input type="text" class="form-control" id="masscan_subnet" name="subnet" required>
+                    <input type="text" class="form-control" id="masscan_subnet" name="subnet" required value="{{ nmap_subnet or '' }}">
                 </div>
                 <div class="mb-3">
                     <label for="ports" class="form-label">Ports (e.g., 1-1000)</label>
