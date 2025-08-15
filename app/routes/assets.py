@@ -102,8 +102,9 @@ def asset_ports_info(asset_id):
 
 @assets_bp.route('/info/<uuid:asset_id>')
 def asset_full_info(asset_id):
-    # asset_id will be a UUID object
+    print("Received asset_id:", asset_id, type(asset_id))
     asset = Asset.query.filter_by(id=asset_id).first()
+    print("Asset found:", asset)
     if not asset:
         return jsonify({"error": "Asset not found"}), 404
 
