@@ -1,24 +1,18 @@
-FROM python:3.11-slim
+# Use an official Node.js runtime as a parent image
+FROM node:20
 
-# Set work directory
-WORKDIR /app
+# Set the working directory
+WORKDIR /usr/src/app
 
-# Copy project files
-COPY . /app
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
 
-# Install system dependencies (if needed)
-RUN apt-get update && apt-get install -y \
-    nmap arp-scan \
-    && rm -rf /var/lib/apt/lists/*
+# Copy the rest of your application code
+COPY . .
 
-# Install Python dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Expose the port your app runs on (change if needed)
+EXPOSE 3000
 
-# Run any setup scripts if needed
-RUN chmod +x setup.sh install_tools.sh && ./setup.sh && ./install_tools.sh
-
-# Expose port if Lantern runs a web server (change if needed)
-EXPOSE 5000
-
-# Set the default command
-CMD ["python", "run.py"]
+# Start the application
+CMD ["npm", "start"]
