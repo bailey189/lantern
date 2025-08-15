@@ -38,7 +38,7 @@
         </li>
         -->
         <li class="nav-item">
-            <form method="post" action="{{ url_for('scan_bp.erase_all') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
+            <form method="post" action="{{ url_for('scan.erase_all') }}" onsubmit="return confirm('Are you sure you want to wipe the system? This cannot be undone.');">
                 <button type="submit" class="nav-link btn btn-link w-100 text-start text-danger">
                     <span class="sidebar-icon bi bi-trash"></span> Wipe System
                 </button>
