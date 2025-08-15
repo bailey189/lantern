@@ -1,3 +1,5 @@
+#routes/assets.py
+# Lantern - Asset Management Module
 from flask import Blueprint, render_template, request, flash, jsonify
 from app.models import Asset, Credential, AssetTier, DataClassification, Port
 from app import db
@@ -95,5 +97,47 @@ def asset_ports_info(asset_id):
     return jsonify({
         "asset_name": asset.name if asset else "",
         "ip_address": asset.ip_address if asset else "",
+        "ports": ports
+    })
+
+@assets_bp.route('/info/<asset_id>')
+def asset_full_info(asset_id):
+    asset = Asset.query.filter_by(id=asset_id).first()
+    if not asset:
+        return jsonify({"error": "Asset not found"}), 404
+
+    # Asset info
+    asset_info = {
+        "name": asset.name,
+        "os_type": asset.os_type,
+        "os_version": asset.os_version,
+        "last_scanned_date": asset.last_scanned_date.strftime("%Y-%m-%d %H:%M:%S") if asset.last_scanned_date else None,
+        "ip_address": asset.ip_address,
+        "mac_address": getattr(asset, "mac_address", None)
+    }
+
+    # Credentials (show only one, or all if you prefer)
+    credentials = []
+    if hasattr(asset, 'credentials'):
+        for cred in asset.credentials:
+            credentials.append({
+                "username": cred.username,
+                "password": "********"  # Masked for security
+            })
+
+    # Network ports
+    ports = []
+    if hasattr(asset, 'ports'):
+        for port in asset.ports:
+            ports.append({
+                "port_number": port.port_number,
+                "protocol": port.protocol,
+                "service_name": port.service_name,
+                "state": port.state
+            })
+
+    return jsonify({
+        "asset_info": asset_info,
+        "credentials": credentials,
         "ports": ports
     })
