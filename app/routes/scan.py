@@ -1,6 +1,6 @@
 # app/routes/scan.py
 from datetime import datetime
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, flash
 from app import db
 from app.models import (
     MisconfigThreatIntel, RemediationAction, SurveyResult, Asset,
@@ -220,10 +220,12 @@ def erase_all():
         db.session.query(Asset).delete()
         db.session.commit()
         msg = "All scan, asset, and port records have been erased."
+        flash(msg, "success")
     except Exception as e:
         db.session.rollback()
         msg = f"Error erasing records: {e}"
-    return render_template('scan.html', title="Lantern - Scan", error=None, discovery_result=None, portscan_result=None, arpscan_result=None, erase_msg=msg)
+        flash(msg, "danger")
+    return
 
 @scan_bp.route('/port', methods=['POST'])
 def port_scan():
