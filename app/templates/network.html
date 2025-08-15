@@ -77,24 +77,63 @@ Network Topology
             .then(data => {
                 const tbody = document.getElementById('asset-info-table');
                 tbody.innerHTML = '';
-                for (const [field, value] of Object.entries(data)) {
-                    // Don't allow editing of id
-                    if (field === "id") {
+
+                // Asset Info
+                if (data.asset_info) {
+                    tbody.innerHTML += `<tr><th colspan="2" class="table-active">Asset Info</th></tr>`;
+                    for (const [key, value] of Object.entries(data.asset_info)) {
                         tbody.innerHTML += `
                             <tr>
-                                <th style="width:40%">${field}</th>
-                                <td><input type="text" class="form-control" name="${field}" value="${value}" readonly></td>
-                            </tr>
-                        `;
-                    } else {
-                        tbody.innerHTML += `
-                            <tr>
-                                <th style="width:40%">${field}</th>
-                                <td><input type="text" class="form-control" name="${field}" value="${value !== null ? value : ''}"></td>
+                                <th style="width:40%">${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</th>
+                                <td>${value !== null ? value : ''}</td>
                             </tr>
                         `;
                     }
                 }
+
+                // Credentials
+                if (data.credentials && data.credentials.length > 0) {
+                    tbody.innerHTML += `<tr><th colspan="2" class="table-active">Credentials</th></tr>`;
+                    data.credentials.forEach((cred, idx) => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <th>Username</th>
+                                <td>${cred.username || ''}</td>
+                            </tr>
+                            <tr>
+                                <th>Password</th>
+                                <td>${cred.password || ''}</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                // Network Ports
+                if (data.ports && data.ports.length > 0) {
+                    tbody.innerHTML += `<tr><th colspan="2" class="table-active">Network Ports</th></tr>`;
+                    data.ports.forEach(port => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <th>Port Number</th>
+                                <td>${port.port_number || ''}</td>
+                            </tr>
+                            <tr>
+                                <th>Protocol</th>
+                                <td>${port.protocol || ''}</td>
+                            </tr>
+                            <tr>
+                                <th>Service Name</th>
+                                <td>${port.service_name || ''}</td>
+                            </tr>
+                            <tr>
+                                <th>State</th>
+                                <td>${port.state || ''}</td>
+                            </tr>
+                            <tr><td colspan="2"><hr></td></tr>
+                        `;
+                    });
+                }
+
                 document.getElementById('asset-info-panel').style.display = '';
             });
     }
