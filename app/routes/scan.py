@@ -197,7 +197,6 @@ def erase_all():
         # Delete from child tables first due to FK constraints
         db.session.query(MisconfigThreatIntel).delete()
         db.session.query(RemediationAction).delete()
-        db.session.query(AssetPort).delete()
         db.session.query(SurveyResult).delete()
         db.session.query(Asset).delete()
         db.session.query(BusinessUnit).delete()
