@@ -71,6 +71,12 @@ Scans
         </div>
     </div>
 
+    {% if scan_status %}
+    <div class="alert alert-info">
+        <strong>Scan Status:</strong> {{ scan_status|capitalize }}
+    </div>
+    {% endif %}
+
     <script>
         // Disable all scan buttons and show spinner on submit
         document.addEventListener('DOMContentLoaded', function () {

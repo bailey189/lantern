@@ -185,6 +185,7 @@ class Scan(db.Model):
     target = db.Column(db.String(256)) # Can be IP, hostname, or scope description
     started_at = db.Column(db.DateTime, default=datetime.utcnow)
     finished_at = db.Column(db.DateTime)
+    status = db.Column(db.String(32), default="pending")  # e.g., pending, running, finished, error
     
     scan_results = db.relationship('ScanResult', back_populates='scan', lazy=True) # Changed from 'results' for clarity
 

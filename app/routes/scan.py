@@ -44,7 +44,7 @@ def discovery_scan():
     if not subnet:
         error = "Subnet is required for discovery scan."
     else:
-        scan = Scan(tool_name="nmap", target=subnet, started_at=datetime.utcnow())
+        scan = Scan(tool_name="nmap", target=subnet, started_at=datetime.utcnow(), status="running")
         db.session.add(scan)
         db.session.commit()
         try:
@@ -185,11 +185,23 @@ def discovery_scan():
             )
             db.session.add(scan_result)
             db.session.commit()
+            scan.status = "finished"
+            db.session.commit()
         except Exception as e:
             db.session.rollback()
+            scan.status = "error"
+            db.session.commit()
             error = f"Error running nmap: {e}"
 
-    return render_template('scan.html', title="Lantern - Scan", discovery_result=discovery_result, error=error)
+    # Get latest scan status for display
+    latest_scan = Scan.query.order_by(Scan.started_at.desc()).first()
+    return render_template(
+        'scan.html',
+        title="Lantern - Scan",
+        discovery_result=discovery_result,
+        error=error,
+        scan_status=latest_scan.status if latest_scan else None
+    )
 
 @scan_bp.route('/erase_all', methods=['POST'])
 def erase_all():
