@@ -195,10 +195,15 @@ def discovery_scan():
 def erase_all():
     try:
         # Delete from child tables first due to FK constraints
+        db.session.query(Route).delete()
+        db.session.query(Port).delete()
+        db.session.query(Credential).delete()
+        db.session.query(ScanResult).delete()
+        db.session.query(Scan).delete()
+        db.session.query(AssetMisconfiguration).delete()
         db.session.query(MisconfigThreatIntel).delete()
         db.session.query(RemediationAction).delete()
         db.session.query(SurveyResult).delete()
-        db.session.query(Asset).delete()
         db.session.query(BusinessUnit).delete()
         db.session.query(NetworkSegment).delete()
         db.session.query(Team).delete()
@@ -208,16 +213,11 @@ def erase_all():
         db.session.query(ThreatIntelligenceCVE).delete()
         db.session.query(ThreatIntelligence).delete()
         db.session.query(InstalledApplication).delete()
-        db.session.query(Port).delete()
-        db.session.query(Credential).delete()
         db.session.query(RuleCVE).delete()
         db.session.query(CWE).delete()
         db.session.query(RuleCWE).delete()
-        db.session.query(ScanResult).delete()
-        db.session.query(Scan).delete()
-        db.session.query(Route).delete()
         db.session.query(SecurityControl).delete()
-        db.session.query(AssetMisconfiguration).delete()
+        db.session.query(Asset).delete()
         db.session.commit()
         msg = "All scan, asset, and port records have been erased."
     except Exception as e:
