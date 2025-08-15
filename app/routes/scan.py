@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, render_template
 from app import db
 from app.models import (
-    MisconfigThreatIntel, RemediationAction, AssetPort, SurveyResult, Asset,
+    MisconfigThreatIntel, RemediationAction, SurveyResult, Asset,
     BusinessUnit, NetworkSegment, Team, RemediationFix, MisconfigurationRule,
     CVE, ThreatIntelligenceCVE, ThreatIntelligence, InstalledApplication, Port,
     Credential, RuleCVE, CWE, RuleCWE, ScanResult, Scan, Route,
