@@ -303,3 +303,16 @@ def arp_scan():
 
     return render_template('scan.html', title="Lantern - Scan", arpscan_result=arpscan_result, error=error)
 
+@scan_bp.route('/progress', methods=['GET'])
+def scan_progress():
+    # Get the latest scan (adjust as needed)
+    latest_scan = Scan.query.order_by(Scan.started_at.desc()).first()
+    if latest_scan:
+        result = ScanResult.query.filter_by(scan_id=latest_scan.id).first()
+        output = result.output if result else ""
+        return jsonify({
+            "status": latest_scan.status,
+            "output": output
+        })
+    return jsonify({"status": "No scan", "output": ""})
+

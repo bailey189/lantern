@@ -71,6 +71,15 @@ Scans
         </div>
     </div>
 
+    <!-- Scan Progress Section -->
+    <div id="scan-progress-section" class="card my-4" style="display:none;">
+        <div class="card-header">Scan Progress / Output</div>
+        <div class="card-body">
+            <div id="scan-progress-status"></div>
+            <pre id="scan-progress-output" style="background:#222; color:#bfc9d1; min-height:100px;"></pre>
+        </div>
+    </div>
+
     {% if scan_status %}
     <div class="alert alert-info">
         <strong>Scan Status:</strong> {{ scan_status|capitalize }}
