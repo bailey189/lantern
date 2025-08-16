@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Lantern - Report{% endblock %}
+
+{% block header_subtitle %}
+Network Security Report
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Section 1: Network Topology -->
+    <h2 class="mb-3">1. Network Topology</h2>
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='network_topology.png') }}" alt="Network Topology" style="max-width: 100%; height: auto; border: 1px solid #ccc; background: #fafbfc;">
+    </div>
+
+    <!-- Section 2: Summary -->
+    <h2 class="mb-3">2. Summary</h2>
+    <div class="mb-4" style="min-height: 80px; border: 1px dashed #888; background: #222; color: #bfc9d1; padding: 1.5em;">
+        <!-- Summary content goes here -->
+    </div>
+
+    <!-- Section 3: Findings -->
+    <h2 class="mb-3">3. Findings</h2>
+    <div class="mb-4" style="min-height: 80px; border: 1px dashed #888; background: #222; color: #bfc9d1; padding: 1.5em;">
+        <!-- Findings content goes here -->
+    </div>
+
+    <!-- Section 4: Recommendations -->
+    <h2 class="mb-3">4. Recommendations</h2>
+    <div class="mb-4" style="min-height: 80px; border: 1px dashed #888; background: #222; color: #bfc9d1; padding: 1.5em;">
+        <!-- Recommendations content goes here -->
+    </div>
+</div>

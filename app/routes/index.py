@@ -40,8 +40,19 @@ def network():
 
 @index_bp.route('/report', methods=['GET', 'POST'])
 def report():
-    # Your report logic here
-    return render_template('report.html')
+    # Gather all data needed for the report
+    assets = Asset.query.all()
+    scans = Scan.query.order_by(Scan.started_at.desc()).all()
+    vulnerabilities = Vulnerability.query.all()  # Example model
+    recommendations = []  # Generate or fetch recommendations
+
+    return render_template(
+        'report.html',
+        assets=assets,
+        scans=scans,
+        vulnerabilities=vulnerabilities,
+        recommendations=recommendations
+    )
 
 @index_bp.route('/run_update', methods=['POST'])
 def run_update():
