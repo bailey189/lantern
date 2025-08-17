@@ -419,6 +419,11 @@ class RemediationAction(db.Model):
     def __repr__(self):
         return f"<RemediationAction {self.id} for {self.misconfig_id} - Priority: {self.actual_priority_assigned}>"
 
+class Vulnerability(db.Model):
+    __tablename__ = 'vulnerabilities'
+    id = db.Column(db.Integer, primary_key=True)
+    # Add other fields as needed
+
 # --- Lookup Tables (Normalized Data) ---
 # AssetTier: Stores asset criticality tiers (e.g., Production, Development).
 # BusinessUnit: Stores business units or departments that own assets.
