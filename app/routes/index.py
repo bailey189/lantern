@@ -6,7 +6,7 @@ import subprocess
 import os
 import sys
 from app.utils.network import get_host_network
-from app.models import Port, ScanResult, Scan, Asset
+from app.models import Port, ScanResult, Scan, Asset, Vulnerability
 
 # Your blueprint is named 'index_bp'
 index_bp = Blueprint('index_bp', __name__) # IMPORTANT: Ensure this is 'index_bp' if you also had 'index' previously
