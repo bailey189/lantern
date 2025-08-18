@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
@@ -74,5 +74,10 @@ def create_app(config_object='config.Config'):
     )
     file_handler.setFormatter(formatter)
     app.logger.addHandler(file_handler)
+
+    @app.route('/test-network')
+    def test_network():
+        return render_template('test_network.html')
+
     return app
 
