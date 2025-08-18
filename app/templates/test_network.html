@@ -12,6 +12,7 @@
 <canvas id="three-canvas"></canvas>
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.161/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.161/examples/jsm/controls/OrbitControls.js";
 
 // Get the canvas element
 const canvas = document.getElementById('three-canvas');
@@ -26,6 +27,11 @@ scene.background = new THREE.Color(0x05070c);
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 15);
+
+// Add OrbitControls for rotation
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // smooth motion
+controls.dampingFactor = 0.05;
 
 // Add light
 const light = new THREE.PointLight(0xffffff, 1, 100);
@@ -88,6 +94,7 @@ connections.forEach(conn => {
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
+  controls.update();
   renderer.render(scene, camera);
 }
 animate();
