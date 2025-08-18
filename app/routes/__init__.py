@@ -54,5 +54,12 @@ def create_app(config_object='config.Config'):
             routes.append(f"{rule.endpoint}: {rule.rule} [{methods}]")
         return "<br>".join(sorted(routes))
 
+    @app.route('/test-network')
+    def test_network():
+        """
+        Route to render the test_network.html template for testing the 3D network diagram.
+        """
+        return render_template('test_network.html')
+
     return app
 
