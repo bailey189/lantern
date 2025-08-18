@@ -76,10 +76,3 @@ def create_app(config_object='config.Config'):
     app.logger.addHandler(file_handler)
     return app
 
-from app.routes import create_app
-
-app = create_app()
-
-if __name__ == "__main__":
-    app.run()
-
